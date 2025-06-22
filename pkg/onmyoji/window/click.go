@@ -34,7 +34,6 @@ func (tc *Window) CalculateTemplatePosition(templateImage image.Image) (int, int
 	if err != nil {
 		return 0, 0, 0, false, err
 	}
-	utils.SaveImg(img, "/Users/crudboy/debug_window_capture.png") // 保存截图用于调试
 
 	// 计算出模板图像在窗口区域内的坐标
 	tempPosX, tempPosY, num := utils.FindTempPos(templateImage, img)

@@ -46,7 +46,6 @@ temp/
 # 截图和临时图片文件
 /screenshots/
 /temp_images/
-
 # 用户生成的模板图片（如果每个用户需要自己的模板）
 # 如果需要保留模板图片，请移除下面一行
 # /k28/user_templates/
@@ -58,3 +57,4 @@ temp/
 # 测试覆盖文件
 coverage.txt
 coverage.html
+free-hands-onmyoji

@@ -121,6 +121,12 @@ make run
         - 使用截图工具重新截图 因为位置计算和模版图片在不同的窗口大小下有区别所以需要重新截图 项目中的图片是基于作者自己的显示器+MacOS的自动4分窗口截取不是适合所有人
   - **构建报错怎么办**
       - 可能是openCV路径不正确或者是C++版本不对 需要你自行修改Makefile中的路径
+  - openCV的安装
+    - 如果你使用的是macOS M系列可以直接使用brew安装
+      ```shell
+      brew install opencv
+      ```
+    - 如果你使用的是其他平台请参考[OpenCV官方文档](https://opencv.org/releases/)进行安装
 
 ## Todo
 

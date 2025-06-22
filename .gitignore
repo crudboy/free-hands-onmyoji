@@ -1,0 +1,60 @@
+# Go相关忽略文件
+# 编译生成的二进制文件
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+main
+
+# Go相关目录
+/vendor/
+/go.work
+
+# IDE相关文件
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+.idea/
+
+# macOS系统文件
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+.Spotlight-V100
+.Trashes
+
+# 项目特定文件
+# 日志文件
+*.log
+logs/
+
+# 可能包含敏感信息的配置文件
+config.local.yaml
+*.env
+
+# 临时文件
+tmp/
+temp/
+
+# 截图和临时图片文件
+/screenshots/
+/temp_images/
+
+# 用户生成的模板图片（如果每个用户需要自己的模板）
+# 如果需要保留模板图片，请移除下面一行
+# /k28/user_templates/
+
+# 编译输出目录
+/bin/
+/dist/
+
+# 测试覆盖文件
+coverage.txt
+coverage.html

@@ -1,6 +1,7 @@
 package window
 
 import (
+	"fmt"
 	"free-hands-onmyoji/pkg/logger"
 	"free-hands-onmyoji/pkg/utils"
 	"image"
@@ -76,6 +77,9 @@ func (tc *Window) CalculateTemplatePosition(templateImage image.Image) (int, int
 // ClickAtTemplatePosition 计算模板图片位置并点击
 // 如果找到模板图片，则点击并返回true，否则返回false
 func (tc *Window) ClickAtTemplatePosition(templateImage image.Image, similarityThreshold float32) (bool, error) {
+	if similarityThreshold <= 0.5 {
+		return false, fmt.Errorf("相似度阈值过低，无法执行点击操作")
+	}
 	screenPosX, screenPosY, num, found, err := tc.CalculateTemplatePosition(templateImage)
 	if err != nil {
 		return false, err
@@ -86,7 +90,7 @@ func (tc *Window) ClickAtTemplatePosition(templateImage image.Image, similarityT
 		return false, nil
 	}
 
-	logger.Info("点击位置: (%d, %d)", screenPosX, screenPosY)
+	logger.Info("点击位置: (%d, %d)，相似度: %.3f", screenPosX, screenPosY, num)
 	robotgo.MoveClick(screenPosX, screenPosY)
 	return true, nil
 }

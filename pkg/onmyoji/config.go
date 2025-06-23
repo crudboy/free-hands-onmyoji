@@ -19,6 +19,7 @@ after_minion_attempts_boss_check = 3
 zhangjie_find_threshold = 2
 # 匹配小怪匹配不成功会进入移动环节
 xunguai_find_threshold = 2
+chest_wait_time = 500 # 宝箱寻找完成后等待页面切换时间，单位毫秒
 `
 const configPath = "./config.toml"
 
@@ -33,16 +34,19 @@ type K28Config struct {
 	AfterMinionAttemptsBossCheck int `toml:"after_minion_attempts_boss_check"` // 刷几次小怪后尝试检查Boss的次数
 	ZhangjieFindThreshold        int `toml:"zhangjie_find_threshold"`          // 章节任务寻找阈值
 	XunguaiFindThreshold         int `toml:"xunguai_find_threshold"`           // 寻怪任务寻找阈值
+	ChestWaitTime                int `toml:"chest_wait_time"`                  // 宝箱寻找完成后等待页面切换时间，单位毫秒
 }
 
 // NewDefaultConfig 创建一个带有默认值的Config实例
 func NewDefaultConfig() Config {
 	return Config{
 		K28: K28Config{
-			JiesuanThreshold:             7, // 默认结算阀值为7
-			AfterMinionAttemptsBossCheck: 3, // 默认刷3次小怪后检查Boss
-			ZhangjieFindThreshold:        2, // 默认章节任务寻找阈值为2
-			XunguaiFindThreshold:         2, // 默认寻怪任务寻找阈值为2
+			JiesuanThreshold:             7,   // 默认结算阀值为7
+			AfterMinionAttemptsBossCheck: 3,   // 默认刷3次小怪后检查Boss
+			ZhangjieFindThreshold:        2,   // 默认章节任务寻找阈值为2
+			XunguaiFindThreshold:         2,   // 默认寻怪任务寻找阈值为2
+			ChestWaitTime:                500, // 默认宝箱等待时间为500毫秒
+
 		},
 	}
 }

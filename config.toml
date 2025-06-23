@@ -10,3 +10,7 @@ after_minion_attempts_boss_check = 3
 zhangjie_find_threshold = 2
 # 匹配小怪匹配不成功会进入移动环节
 xunguai_find_threshold = 2
+# 宝箱寻找完后等待界面的时间间隔单位毫秒
+chest_wait_time = 500
+
+

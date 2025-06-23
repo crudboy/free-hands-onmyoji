@@ -24,14 +24,14 @@ func (t *JinRu) Name() enums.TaskType {
 }
 func (t *JinRu) Execute(controller statemachine.TaskController) error {
 	// 使用公共方法计算模板位置并点击
-	clicked, err := t.ClickAtTemplatePosition(t.TemplateImg.Image, 0)
+	clicked, err := t.ClickAtTemplatePosition(t.TemplateImg.Image, 0.8)
 
 	if err != nil {
 		return err
 	}
 
 	if clicked {
-		controller.ClearAttributes() // 清除所有属性
+		logger.Info("进入任务点击成功")
 		controller.Next(enums.XunGuai)
 		return nil
 	}

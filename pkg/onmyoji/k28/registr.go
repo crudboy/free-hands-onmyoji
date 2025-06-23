@@ -88,7 +88,7 @@ func Registration(machine *statemachine.StateMachine, info entity.WindowInfo, co
 	_registration(machine, newMoveTask(w))
 	_registration(machine, newJieSuanTask(config, w, templateMap[string(enums.JieSuan)]))
 	_registration(machine, newBossTask(w, templateMap[string(enums.Boss)]))
-	_registration(machine, newBaoXiangTask(w, templateMap[string(enums.BaoXiang)]))
+	_registration(machine, newBaoXiangTask(config, w, templateMap[string(enums.BaoXiang)]))
 }
 
 func _registration(machine *statemachine.StateMachine, task statemachine.NamedTask) {

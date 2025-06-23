@@ -38,15 +38,13 @@ func (t *ZhangJie) Execute(controller statemachine.TaskController) error {
 
 	if clicked {
 		logger.Info("章节点击成功")
-		t.Count = 0 // 重置执行次数
-		controller.ClearAttributes()
+		t.Count = 0                  // 重置执行次数
 		controller.Next(enums.JinRu) // 切换到进入任务
 		return nil
 	}
 	if t.Count > t.conf.ZhangjieFindThreshold {
 		logger.Warn("选择章节任务执行失败超过阈值 %d，尝试执行进入任务", t.conf.ZhangjieFindThreshold)
 		t.Count = 0 // 重置执行次数
-		controller.ClearAttributes()
 		logger.Info("章节没有匹配到，切换到进入任务")
 		controller.Next(enums.JinRu) // 切换到进入任务
 	}

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"free-hands-onmyoji/pkg/enums"
 	"free-hands-onmyoji/pkg/logger"
+	"free-hands-onmyoji/pkg/onmyoji"
 	"free-hands-onmyoji/pkg/onmyoji/entity"
 	"free-hands-onmyoji/pkg/onmyoji/window"
 	"free-hands-onmyoji/pkg/statemachine"
@@ -13,12 +14,14 @@ import (
 type BaoXiang struct {
 	TemplateImg   entity.ImgInfo // 模板图片信息
 	window.Window                // 嵌入公共字段
+	conf          onmyoji.K28Config
 }
 
-func newBaoXiangTask(window window.Window, info entity.ImgInfo) *BaoXiang {
+func newBaoXiangTask(conf onmyoji.Config, window window.Window, info entity.ImgInfo) *BaoXiang {
 	return &BaoXiang{
 		TemplateImg: info,
 		Window:      window,
+		conf:        conf.K28,
 	}
 }
 
@@ -42,8 +45,9 @@ func (t *BaoXiang) Execute(controller statemachine.TaskController) error {
 		time.Sleep(200 * time.Millisecond) // 等待地板点击完成
 	} else {
 		//宝箱寻找完成
-		time.Sleep(500 * time.Millisecond) // 等待切换完成
-		controller.Next(enums.JinRu)       // 切换到进入任务
+		time.Sleep(time.Duration(t.conf.ChestWaitTime) * time.Millisecond) // 等待切换完成
+		controller.ClearAttributes()                                       // 清除所有任务属性
+		controller.Next(enums.JinRu)                                       // 切换到进入任务
 		logger.Info("宝箱没有匹配到，切换到进入任务")
 	}
 	return nil

@@ -2,6 +2,8 @@ module free-hands-onmyoji
 
 go 1.24
 
+toolchain go1.24.4
+
 require (
 	github.com/andybrewer/mack v0.0.0-20220307193339-22e922cc18af
 	github.com/go-vgo/robotgo v0.110.8

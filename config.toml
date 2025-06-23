@@ -1,0 +1,12 @@
+
+# 阴阳师自动化配置文件 默认配置
+[k28]
+# 结算阀值：多少次结算后进入下一个状态
+jiesuan_threshold = 7
+
+# 刷几次小怪后尝试检查Boss的次数
+after_minion_attempts_boss_check = 3
+# 匹配章节次数匹配不成功会进入下一个环节
+zhangjie_find_threshold = 2
+# 匹配小怪匹配不成功会进入移动环节
+xunguai_find_threshold = 2

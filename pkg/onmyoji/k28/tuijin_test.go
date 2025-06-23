@@ -28,7 +28,7 @@ func (m *MockTaskController) NextIndex() {
 
 // 由于robotgo.CaptureImg以及robotgo.MoveClick在测试环境中不应该被真正执行，
 // 因此这里使用临时的替代函数，并在测试后恢复原来的函数
-func TestTuiJing_Execute(t *testing.T) {
+func TestMove_Execute(t *testing.T) {
 
 	script := fmt.Sprintf(`
 tell application "System Events"
@@ -43,8 +43,8 @@ end tell
 	}
 	var x, y, w, h int
 	fmt.Sscanf(tell, "%d, %d, %d, %d", &x, &y, &w, &h)
-	// 创建TuiJing实例
-	tuiJing := &TuiJing{
+	// 创建Move实例
+	tuiJing := &Move{
 		Window: window.Window{
 			WindowX: x,
 			WindowY: y,

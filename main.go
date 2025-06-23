@@ -3,6 +3,7 @@ package main
 import (
 	"free-hands-onmyoji/pkg/events"
 	"free-hands-onmyoji/pkg/logger"
+	"free-hands-onmyoji/pkg/onmyoji"
 	"free-hands-onmyoji/pkg/onmyoji/k28"
 	"free-hands-onmyoji/pkg/onmyoji/window"
 	"free-hands-onmyoji/pkg/statemachine"
@@ -12,14 +13,18 @@ import (
 func main() {
 	// 初始化日志系统
 	logger.Init()
-
+	// 加载配置文件
+	config, error := onmyoji.LoadDefaultConfig()
+	if error != nil {
+		panic(error)
+	}
 	// 创建一个通道用于控制程序退出
 	exitChan := make(chan bool)
 
 	// 在后台监听键盘事件
 	go events.ListenForExitKey(exitChan)
-
 	// 获取游戏窗口的位置和大小
+	logger.Info("正在获取游戏窗口位置和大小...")
 	windowInfo, err := window.GetWindowPosition("BlueStacks")
 	if err != nil {
 		logger.Fatal("获取窗口信息失败: %v", err)
@@ -27,9 +32,8 @@ func main() {
 
 	sm := statemachine.NewStateMachine()
 	// Initialize tasks with the window position and size
-	k28.Registration(sm, windowInfo)
+	k28.Registration(sm, windowInfo, config)
 	logger.Info("状态机开始运行...")
-	logger.Info("每个任务将根据自己的逻辑决定何时切换到下一个任务")
 	logger.Info("当前任务: %s", sm.GetCurrentTask().Name())
 	logger.Info("----------------------------------------")
 	logger.Info("按下 Command+Shift+O 组合键可以停止程序运行")

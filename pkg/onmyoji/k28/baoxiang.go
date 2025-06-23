@@ -15,6 +15,13 @@ type BaoXiang struct {
 	window.Window                // 嵌入公共字段
 }
 
+func newBaoXiangTask(window window.Window, info entity.ImgInfo) *BaoXiang {
+	return &BaoXiang{
+		TemplateImg: info,
+		Window:      window,
+	}
+}
+
 func (t *BaoXiang) Name() enums.TaskType {
 	return enums.BaoXiang
 }

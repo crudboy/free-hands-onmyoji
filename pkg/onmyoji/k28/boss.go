@@ -15,6 +15,12 @@ type Boss struct {
 	window.Window                // 嵌入公共字段
 }
 
+func newBossTask(window window.Window, info entity.ImgInfo) *Boss {
+	return &Boss{
+		TemplateImg: info,
+		Window:      window,
+	}
+}
 func (t *Boss) Name() enums.TaskType {
 	return enums.Boss
 }

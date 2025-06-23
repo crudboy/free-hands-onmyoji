@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"free-hands-onmyoji/pkg/enums"
 	"free-hands-onmyoji/pkg/logger"
+	"free-hands-onmyoji/pkg/onmyoji"
 	"free-hands-onmyoji/pkg/onmyoji/entity"
 	"free-hands-onmyoji/pkg/onmyoji/window"
 	"free-hands-onmyoji/pkg/statemachine"
@@ -14,10 +15,17 @@ import (
 type XunGuai struct {
 	TemplateImg   entity.ImgInfo
 	window.Window // 嵌入公共字段
+	conf          onmyoji.K28Config
 }
 
-// XunGuai 实现 NamedTask 接口
-// Name 实现 NamedTask 接口
+func newXunGuaiTask(config onmyoji.Config, window window.Window, info entity.ImgInfo) *XunGuai {
+	return &XunGuai{
+		TemplateImg: info,
+		Window:      window,
+		conf:        config.K28,
+	}
+}
+
 func (t *XunGuai) Name() enums.TaskType {
 	return enums.XunGuai
 }
@@ -66,13 +74,13 @@ func (t *XunGuai) Execute(controller statemachine.TaskController) error {
 		controller.Next(enums.BaoXiang) // 切换到宝箱任务
 		return nil
 	}
-	if t.Count >= 2 {
+	if t.Count >= t.conf.XunguaiFindThreshold { // 如果执行次数超过阈值
 		//说明什么没有怪物了 需要向前移动 Boss任务会在结算后尝试匹配的所以这里并不需要尝试匹配boss
 		logger.Info("由于没有识别到怪物 '%s' 执行次数已达 %d 次，切换到移动任务", t.Name(), t.Count)
 		randomMoveCount := utils.RandomInt(1, 3)
 		logger.Info("随机生成的移动次数: %d", randomMoveCount)
 		controller.SetAttribute(types.MoveCount, randomMoveCount) // 重置计数器
-		controller.Next(enums.TuiJing)
+		controller.Next(enums.Move)
 		t.Count = 0 // 重置计数器
 	}
 

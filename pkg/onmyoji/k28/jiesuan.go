@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"free-hands-onmyoji/pkg/enums"
 	"free-hands-onmyoji/pkg/logger"
+	"free-hands-onmyoji/pkg/onmyoji"
 	"free-hands-onmyoji/pkg/onmyoji/entity"
 	"free-hands-onmyoji/pkg/onmyoji/window"
 	"free-hands-onmyoji/pkg/statemachine"
@@ -20,8 +21,16 @@ type JieSuan struct {
 	TemplateImg   entity.ImgInfo // 模板图像信息
 	window.Window                // 嵌入公共字段
 	runThreshold  int            // 运行次数阈值
+	conf          onmyoji.K28Config
 }
 
+func newJieSuanTask(config onmyoji.Config, window window.Window, info entity.ImgInfo) *JieSuan {
+	return &JieSuan{
+		TemplateImg: info,
+		Window:      window,
+		conf:        config.K28,
+	}
+}
 func (t *JieSuan) Name() enums.TaskType {
 	return enums.JieSuan
 }
@@ -32,8 +41,8 @@ func (t *JieSuan) Execute(controller statemachine.TaskController) error {
 	if err != nil {
 		return fmt.Errorf("模板图像匹配错误: %v", err)
 	}
-	if t.runThreshold > 7 {
-		logger.Warn("结算任务执行次数超过阈值，跳过结算点击操作，进入寻怪任务")
+	if t.runThreshold > t.conf.JiesuanThreshold {
+		logger.Warn("结算任务执行次数超过阈值 %d，跳过结算点击操作，进入寻怪任务", t.conf.JiesuanThreshold)
 		controller.Next(enums.XunGuai) // 切换到寻怪任务
 		t.runThreshold = 0             // 重置运行次数阈值
 		return nil
@@ -50,7 +59,8 @@ func (t *JieSuan) Execute(controller statemachine.TaskController) error {
 		}
 
 		//由于boss也是有结算画面的所以这里是4当第二次进入后count默认就是1了
-		if t.Count >= 3 && !hasBoss {
+		if t.Count >= t.conf.AfterMinionAttemptsBossCheck && !hasBoss {
+			logger.Info("结算任务执行超过 %d，尝试检测Boss", t.conf.AfterMinionAttemptsBossCheck)
 			randomInt := utils.RandomInt(500, 857)
 			time.Sleep(time.Duration(randomInt) * time.Millisecond) // 等待随机时间
 			logger.Info("检测Boss任务开始执行")

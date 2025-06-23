@@ -9,15 +9,21 @@ import (
 	"time"
 )
 
-type TuiJing struct {
+type Move struct {
 	window.Window // 嵌入公共字段
 }
 
-func (t *TuiJing) Name() enums.TaskType {
-	return enums.TuiJing
+func newMoveTask(window window.Window) *Move {
+	return &Move{
+		Window: window,
+	}
+
+}
+func (t *Move) Name() enums.TaskType {
+	return enums.Move
 }
 
-func (t *TuiJing) Execute(controller statemachine.TaskController) error {
+func (t *Move) Execute(controller statemachine.TaskController) error {
 	t.Count++ // 增加执行次数
 	// 等待一段时间，让角色移动
 	moveDelay := 800

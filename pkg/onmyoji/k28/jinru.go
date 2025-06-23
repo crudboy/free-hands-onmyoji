@@ -13,6 +13,12 @@ type JinRu struct {
 	window.Window // 嵌入公共字段
 }
 
+func newJinRuTask(window window.Window, info entity.ImgInfo) *JinRu {
+	return &JinRu{
+		TemplateImg: info,
+		Window:      window,
+	}
+}
 func (t *JinRu) Name() enums.TaskType {
 	return enums.JinRu
 }

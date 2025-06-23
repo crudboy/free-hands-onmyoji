@@ -27,9 +27,8 @@ func (t *Boss) Execute(controller statemachine.TaskController) error {
 
 	if clicked {
 		controller.SetAttribute(types.Boss, true) // 设置点击完成标志
-		controller.Next(enums.JieSuan)            // 切换到刷怪任务
+		controller.Next(enums.JieSuan)            // 切换到结算任务
 	} else {
-		logger.Warn("模板匹配相似度过低，跳过点击操作")
 		controller.Next(enums.XunGuai) // 切换到寻怪任务
 		logger.Info("Boss没有匹配到切换到寻怪任务")
 	}

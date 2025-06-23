@@ -24,8 +24,6 @@ func (t *XunGuai) Name() enums.TaskType {
 
 func (t *XunGuai) Execute(controller statemachine.TaskController) error {
 	t.Count++ // 增加执行次数
-	logger.Info("任务 '%s' 开始执行，第 %d 次执行", t.Name(), t.Count)
-
 	// 使用公共方法计算模板位置并添加随机偏移点击
 	_, _, num, found, err := t.CalculateTemplatePosition(t.TemplateImg.Image)
 	if err != nil {
@@ -52,24 +50,25 @@ func (t *XunGuai) Execute(controller statemachine.TaskController) error {
 					return err
 				}
 			}
+			logger.Info("小怪点击成功，切换到结算任务")
 			controller.Next(enums.JieSuan) // 切换到结算任务
 			return nil
 		}
 	} else {
-		logger.Warn("模板匹配相似度过低: %.3f，跳过点击操作", num)
+		logger.Warn("寻找怪物模板匹配相似度过低: %.3f，跳过点击操作", num)
 	}
 	boss, err := controller.GetAttribute(types.Boss)
 	hasBoss := boss != nil && err == nil //是否已经寻到Boss
 
 	if hasBoss {
 		t.Count = 0
-		logger.Info("Boss已经寻找到，重置计数器")
+		logger.Info("Boss已经寻找到，重置计数器进入寻找宝箱任务")
 		controller.Next(enums.BaoXiang) // 切换到宝箱任务
 		return nil
 	}
 	if t.Count >= 2 {
 		//说明什么没有怪物了 需要向前移动 Boss任务会在结算后尝试匹配的所以这里并不需要尝试匹配boss
-		logger.Info("由于没有匹配到任务 '%s' 执行次数已达 %d 次，切换到移动任务", t.Name(), t.Count)
+		logger.Info("由于没有识别到怪物 '%s' 执行次数已达 %d 次，切换到移动任务", t.Name(), t.Count)
 		randomMoveCount := utils.RandomInt(1, 3)
 		logger.Info("随机生成的移动次数: %d", randomMoveCount)
 		controller.SetAttribute(types.MoveCount, randomMoveCount) // 重置计数器

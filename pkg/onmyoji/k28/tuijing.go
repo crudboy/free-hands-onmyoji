@@ -19,8 +19,6 @@ func (t *TuiJing) Name() enums.TaskType {
 
 func (t *TuiJing) Execute(controller statemachine.TaskController) error {
 	t.Count++ // 增加执行次数
-	logger.Info("任务 '%s' 开始执行，第 %d 次执行", t.Name(), t.Count)
-
 	// 等待一段时间，让角色移动
 	moveDelay := 800
 	attribute, _ := controller.GetAttribute(types.MoveCount)
@@ -37,7 +35,8 @@ func (t *TuiJing) Execute(controller statemachine.TaskController) error {
 			logger.Debug("成功设置移动完成标志 types.Move = true")
 		}
 		time.Sleep(300 * time.Millisecond) // 移动结束
-		controller.Next(enums.XunGuai)     // 切换到下一个任务
+		logger.Info("移动结束，切换到寻怪任务")
+		controller.Next(enums.XunGuai) // 切换到下一个任务
 	}
 
 	return nil

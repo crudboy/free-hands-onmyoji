@@ -16,6 +16,7 @@ import (
 var templateMap = make(map[string]entity.ImgInfo)
 
 func initImages() {
+	logger.Info("加载困28任务模板图片")
 	// 如果模板图片已经加载，则不需要重新加载
 	if len(templateMap) > 0 {
 		return
@@ -84,6 +85,7 @@ func Registration(machine *statemachine.StateMachine, info entity.WindowInfo) {
 }
 
 func _registration(machine *statemachine.StateMachine, task statemachine.NamedTask) {
+	logger.Info("注册任务: %s", task.Name())
 	machine.AddTask(task)
 }
 func xunguai(info entity.WindowInfo, templateImg entity.ImgInfo) *XunGuai {

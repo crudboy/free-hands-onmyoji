@@ -17,8 +17,6 @@ func (t *JinRu) Name() enums.TaskType {
 	return enums.JinRu
 }
 func (t *JinRu) Execute(controller statemachine.TaskController) error {
-	logger.Info("任务 '%s' 开始执行，第 %d 次执行", t.Name(), t.Count)
-
 	// 使用公共方法计算模板位置并点击
 	clicked, err := t.ClickAtTemplatePosition(t.TemplateImg.Image, 0)
 

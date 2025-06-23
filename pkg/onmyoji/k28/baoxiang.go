@@ -20,7 +20,6 @@ func (t *BaoXiang) Name() enums.TaskType {
 }
 
 func (t *BaoXiang) Execute(controller statemachine.TaskController) error {
-	logger.Info("第 %d 次执行", t.Count)
 	// 使用公共方法计算模板位置并添加随机偏移点击
 	clicked, err := t.ClickAtTemplatePositionWithRandomOffset(t.TemplateImg.Image, 0.8)
 	if err != nil {
@@ -31,6 +30,7 @@ func (t *BaoXiang) Execute(controller statemachine.TaskController) error {
 		logger.Info("宝箱点击成功")
 		time.Sleep(200 * time.Millisecond) // 等待点击操作完成
 		// 点击地板
+		logger.Info("宝箱点击后，点击地板")
 		t.ClickFloor(0, 50)
 		time.Sleep(200 * time.Millisecond) // 等待地板点击完成
 	} else {

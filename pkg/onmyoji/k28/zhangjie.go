@@ -21,8 +21,6 @@ func (t *ZhangJie) Name() enums.TaskType {
 func (t *ZhangJie) Execute(controller statemachine.TaskController) error {
 	t.Count++ // 增加执行次数
 
-	logger.Info("任务 '%s' 开始执行，第 %d 次执行", t.Name(), t.Count)
-
 	// 使用公共方法计算模板位置并添加随机偏移点击
 	clicked, err := t.ClickAtTemplatePositionWithRandomOffset(t.TemplateImg.Image, 0.8)
 	if err != nil {
@@ -37,11 +35,11 @@ func (t *ZhangJie) Execute(controller statemachine.TaskController) error {
 		return nil
 	}
 	if t.Count > 2 {
-		logger.Warn("选择章节任务执行失败超过3次，尝试执行进入任务")
+		logger.Warn("选择章节任务执行失败超过阈值，尝试执行进入任务")
 		t.Count = 0 // 重置执行次数
 		controller.ClearAttributes()
-		controller.Next(enums.JinRu) // 切换到进入任务
 		logger.Info("章节没有匹配到，切换到进入任务")
+		controller.Next(enums.JinRu) // 切换到进入任务
 	}
 
 	return nil

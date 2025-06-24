@@ -10,21 +10,22 @@ import (
 	"free-hands-onmyoji/pkg/types"
 )
 
-type Boss struct {
+// BossDetector Boss检测任务
+type BossDetector struct {
 	TemplateImg   entity.ImgInfo // 模板图片信息
 	window.Window                // 嵌入公共字段
 }
 
-func newBossTask(window window.Window, info entity.ImgInfo) *Boss {
-	return &Boss{
+func newBossDetectorTask(window window.Window, info entity.ImgInfo) *BossDetector {
+	return &BossDetector{
 		TemplateImg: info,
 		Window:      window,
 	}
 }
-func (t *Boss) Name() enums.TaskType {
+func (t *BossDetector) Name() enums.TaskType {
 	return enums.Boss
 }
-func (t *Boss) Execute(controller statemachine.TaskController) error {
+func (t *BossDetector) Execute(controller statemachine.TaskController) error {
 	// 使用公共方法计算模板位置并添加随机偏移点击
 	clicked, err := t.ClickAtTemplatePositionWithRandomOffset(t.TemplateImg.Image, 0.8)
 	if err != nil {

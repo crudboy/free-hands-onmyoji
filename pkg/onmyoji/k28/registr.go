@@ -82,13 +82,13 @@ func Registration(machine *statemachine.StateMachine, info entity.WindowInfo, co
 		WindowH: info.WindowH,
 		WindowW: info.WindowW,
 	}
-	_registration(machine, newZhangJieTask(config, w, templateMap[string(enums.ZhangJie)]))
-	_registration(machine, newJinRuTask(w, templateMap[string(enums.JinRu)]))
-	_registration(machine, newXunGuaiTask(config, w, templateMap[string(enums.XunGuai)]))
+	_registration(machine, newChapterDetectorTask(config, w, templateMap[string(enums.ZhangJie)]))
+	_registration(machine, newExploreDetectorTask(w, templateMap[string(enums.JinRu)]))
+	_registration(machine, newMonsterDetectorTask(config, w, templateMap[string(enums.XunGuai)]))
 	_registration(machine, newMoveTask(w))
-	_registration(machine, newJieSuanTask(config, w, templateMap[string(enums.JieSuan)]))
-	_registration(machine, newBossTask(w, templateMap[string(enums.Boss)]))
-	_registration(machine, newBaoXiangTask(config, w, templateMap[string(enums.BaoXiang)]))
+	_registration(machine, newLevelCompletionDetectorTask(config, w, templateMap[string(enums.JieSuan)]))
+	_registration(machine, newBossDetectorTask(w, templateMap[string(enums.Boss)]))
+	_registration(machine, newTreasureChestDetectorTask(config, w, templateMap[string(enums.BaoXiang)]))
 }
 
 func _registration(machine *statemachine.StateMachine, task statemachine.NamedTask) {

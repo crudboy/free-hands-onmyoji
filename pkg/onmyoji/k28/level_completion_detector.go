@@ -14,27 +14,27 @@ import (
 )
 
 /*
-	寻找小怪任务如果寻不到
+	LevelCompletionDetector 过关检测
 */
 
-type JieSuan struct {
+type LevelCompletionDetector struct {
 	TemplateImg   entity.ImgInfo // 模板图像信息
 	window.Window                // 嵌入公共字段
 	runThreshold  int            // 运行次数阈值
 	conf          onmyoji.K28Config
 }
 
-func newJieSuanTask(config onmyoji.Config, window window.Window, info entity.ImgInfo) *JieSuan {
-	return &JieSuan{
+func newLevelCompletionDetectorTask(config onmyoji.Config, window window.Window, info entity.ImgInfo) *LevelCompletionDetector {
+	return &LevelCompletionDetector{
 		TemplateImg: info,
 		Window:      window,
 		conf:        config.K28,
 	}
 }
-func (t *JieSuan) Name() enums.TaskType {
+func (t *LevelCompletionDetector) Name() enums.TaskType {
 	return enums.JieSuan
 }
-func (t *JieSuan) Execute(controller statemachine.TaskController) error {
+func (t *LevelCompletionDetector) Execute(controller statemachine.TaskController) error {
 	t.runThreshold++
 	// 使用公共方法计算模板位置并添加随机偏移点击
 	clicked, err := t.ClickAtTemplatePositionWithRandomOffset(t.TemplateImg.Image, 0.8)

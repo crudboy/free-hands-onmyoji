@@ -9,6 +9,7 @@ import (
 	"time"
 )
 
+// Move 移动任务
 type Move struct {
 	window.Window // 嵌入公共字段
 }

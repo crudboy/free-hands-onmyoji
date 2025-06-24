@@ -26,54 +26,7 @@
 4. 尊重游戏开发者的知识产权和劳动成果
 
 使用本工具即表示您已阅读、理解并同意上述免责声明的所有条款。
-## Project Structure
 
-```
-free-hands-onmyoji
-├── k28/                   # 保存第28章模板图片
-│   ├── BaoXiang.jpg       # 宝箱图片模板
-│   ├── Boss.jpg           # Boss图片模板
-│   ├── JieSuan.jpg        # 结算界面图片模板
-│   ├── JinRu.jpg          # 进入图片模板
-│   ├── XunGuai.jpg        # 寻怪图片模板
-│   └── ZhangJie.jpg       # 章节图片模板
-├── main.go                # 应用程序入口点
-├── Makefile               # 项目构建脚本
-├── pkg/                   # 项目包结构
-│   ├── enums/             # 枚举类型定义
-│   │   ├── enums.go       # 枚举常量
-│   │   └── enums_test.go  # 枚举测试
-│   ├── events/            # 事件处理
-│   │   └── exit.go        # 退出事件
-│   ├── logger/            # 日志系统
-│   │   └── logger.go      # 日志实现
-│   ├── onmyoji/           # 阴阳师游戏相关
-│   │   ├── entity/        # 实体定义
-│   │   │   └── type.go    # 类型定义
-│   │   ├── k28/           # 第28章相关实现
-│   │   │   ├── baoxiang.go # 宝箱处理
-│   │   │   ├── boss.go    # Boss战处理
-│   │   │   ├── jiesuan.go # 结算界面处理
-│   │   │   ├── jinru.go   # 进入章节界面处理
-│   │   │   ├── registr.go # 状态注册
-│   │   │   ├── tuijing.go # 移动角色
-│   │   │   ├── tuijin_test.go # 移动角色测试
-│   │   │   ├── xunguai.go # 寻怪处理
-│   │   │   └── zhangjie.go # 章节点击处理
-│   │   ├── tansuo/        # 探索相关实现
-│   │   └── window/        # 窗口操作
-│   │       ├── click.go   # 点击操作
-│   │       └── position.go # 位置计算
-│   ├── statemachine/      # 状态机
-│   │   └── state_machine.go # 状态机实现
-│   ├── types/             # 通用类型
-│   │   └── types.go       # 类型定义
-│   └── utils/             # 工具函数
-│       └── tools.go       # 通用工具
-├── go.mod                 # Go模块配置
-├── go.sum                 # 依赖校验和
-└── README.md              # 项目文档
-```
 
 ## 开始运行
 ```shell

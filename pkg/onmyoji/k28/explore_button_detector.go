@@ -8,21 +8,22 @@ import (
 	"free-hands-onmyoji/pkg/statemachine"
 )
 
-type JinRu struct {
+// ExploreDetector 探索按钮检测任务
+type ExploreDetector struct {
 	TemplateImg   entity.ImgInfo
 	window.Window // 嵌入公共字段
 }
 
-func newJinRuTask(window window.Window, info entity.ImgInfo) *JinRu {
-	return &JinRu{
+func newExploreDetectorTask(window window.Window, info entity.ImgInfo) *ExploreDetector {
+	return &ExploreDetector{
 		TemplateImg: info,
 		Window:      window,
 	}
 }
-func (t *JinRu) Name() enums.TaskType {
+func (t *ExploreDetector) Name() enums.TaskType {
 	return enums.JinRu
 }
-func (t *JinRu) Execute(controller statemachine.TaskController) error {
+func (t *ExploreDetector) Execute(controller statemachine.TaskController) error {
 	// 使用公共方法计算模板位置并点击
 	clicked, err := t.ClickAtTemplatePosition(t.TemplateImg.Image, 0.8)
 

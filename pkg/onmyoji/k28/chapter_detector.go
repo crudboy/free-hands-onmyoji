@@ -10,24 +10,25 @@ import (
 	"free-hands-onmyoji/pkg/statemachine"
 )
 
-type ZhangJie struct {
+// ChapterDetector 章节检测任务
+type ChapterDetector struct {
 	TemplateImg entity.ImgInfo // 模板图片信息
 	window.Window
 	conf onmyoji.K28Config
 }
 
-func newZhangJieTask(config onmyoji.Config, window window.Window, info entity.ImgInfo) *ZhangJie {
-	return &ZhangJie{
+func newChapterDetectorTask(config onmyoji.Config, window window.Window, info entity.ImgInfo) *ChapterDetector {
+	return &ChapterDetector{
 		TemplateImg: info,
 		Window:      window,
 		conf:        config.K28,
 	}
 }
-func (t *ZhangJie) Name() enums.TaskType {
+func (t *ChapterDetector) Name() enums.TaskType {
 	return enums.ZhangJie
 }
 
-func (t *ZhangJie) Execute(controller statemachine.TaskController) error {
+func (t *ChapterDetector) Execute(controller statemachine.TaskController) error {
 	t.Count++ // 增加执行次数
 
 	// 使用公共方法计算模板位置并添加随机偏移点击

@@ -1,6 +1,8 @@
 package breaker
 
 import (
+	"free-hands-onmyoji/pkg/enums"
+	"free-hands-onmyoji/pkg/logger"
 	"free-hands-onmyoji/pkg/onmyoji/entity"
 	"free-hands-onmyoji/pkg/onmyoji/window"
 	"free-hands-onmyoji/pkg/statemachine"
@@ -12,14 +14,14 @@ type PlayerDetector struct {
 	window.Window
 }
 
-func newPlayerDetector(window window.Window, templateImg []entity.ImgInfo) *PlayerDetector {
+func newPlayerDetector(window window.Window, templates []entity.ImgInfo) *PlayerDetector {
 	return &PlayerDetector{
-		ImgTemplates: templateImg,
+		ImgTemplates: templates,
 		Window:       window,
 	}
 }
-func (t *PlayerDetector) Name() string {
-	return "PlayerDetector"
+func (t *PlayerDetector) Name() enums.TaskType {
+	return enums.BreakerPlayer
 }
 func (t *PlayerDetector) Execute(controller statemachine.TaskController) error {
 	for _, img := range t.ImgTemplates {
@@ -29,9 +31,9 @@ func (t *PlayerDetector) Execute(controller statemachine.TaskController) error {
 		}
 
 		if clicked {
-			controller.Next("PlayerDetected") // 切换到玩家检测完成状态
+			controller.Next(enums.BreakerAttack) // 切换到玩家检测完成状态
 		} else {
-			controller.Next("PlayerNotDetected") // 切换到玩家未检测状态
+			logger.Info("玩家检测未匹配到，继续尝试下一个模板")
 		}
 	}
 	return nil

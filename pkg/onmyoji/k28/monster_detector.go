@@ -10,6 +10,7 @@ import (
 	"free-hands-onmyoji/pkg/statemachine"
 	"free-hands-onmyoji/pkg/types"
 	"free-hands-onmyoji/pkg/utils"
+	"time"
 )
 
 // MonsterDetector 小怪检测任务
@@ -75,7 +76,8 @@ func (t *MonsterDetector) Execute(controller statemachine.TaskController) error 
 	if hasBoss {
 		t.Count = 0
 		logger.Info("Boss已经寻找到，重置计数器进入寻找宝箱任务")
-		controller.Next(enums.BaoXiang) // 切换到宝箱任务
+		time.Sleep(500 * time.Millisecond) // 等待500毫秒，确保界面稳定
+		controller.Next(enums.BaoXiang)    // 切换到宝箱任务
 		return nil
 	}
 	if t.Count >= t.conf.XunguaiFindThreshold { // 如果执行次数超过阈值

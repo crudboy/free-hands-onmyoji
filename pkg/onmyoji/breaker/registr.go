@@ -1,4 +1,4 @@
-package k28
+package breaker
 
 import (
 	"fmt"
@@ -14,10 +14,10 @@ import (
 	"path/filepath"
 )
 
-type K28Registrator struct {
+type BreakerRegistr struct {
 }
 
-func (r *K28Registrator) Registration(machine *statemachine.StateMachine, info entity.WindowInfo, config onmyoji.Config, imgMap map[string]entity.ImgInfo) error {
+func (r *BreakerRegistr) Registration(machine *statemachine.StateMachine, info entity.WindowInfo, config onmyoji.Config, imgMap map[string]entity.ImgInfo) error {
 	w := window.Window{
 		WindowX: info.WindowX,
 		WindowY: info.WindowY,
@@ -25,17 +25,11 @@ func (r *K28Registrator) Registration(machine *statemachine.StateMachine, info e
 		WindowW: info.WindowW,
 	}
 
-	onmyoji.Registration(machine, newChapterDetectorTask(config, w, imgMap[string(enums.ZhangJie)]))
-	onmyoji.Registration(machine, newExploreDetectorTask(w, imgMap[string(enums.JinRu)]))
-	onmyoji.Registration(machine, newMonsterDetectorTask(config, w, imgMap[string(enums.XunGuai)]))
-	onmyoji.Registration(machine, newMoveTask(w))
-	onmyoji.Registration(machine, newLevelCompletionDetectorTask(config, w, imgMap[string(enums.JieSuan)]))
-	onmyoji.Registration(machine, newBossDetectorTask(w, imgMap[string(enums.Boss)]))
-	onmyoji.Registration(machine, newTreasureChestDetectorTask(config, w, imgMap[string(enums.BaoXiang)]))
+	onmyoji.Registration(machine, newAttackDetector(w, imgMap[string(enums.BreakerAttack)], config))
 
 	return nil
 }
-func (r *K28Registrator) LoadImageTemplates() (map[string]entity.ImgInfo, error) {
+func LoadImageTemplates() (map[string]entity.ImgInfo, error) {
 
 	logger.Info("加载困28任务模板图片")
 

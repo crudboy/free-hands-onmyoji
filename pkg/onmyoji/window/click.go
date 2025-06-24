@@ -127,7 +127,7 @@ func (tc *Window) ClickFloor(rightOffset int, downOffset int) (int, int) {
 	// 计算点击位置 - 在屏幕中央偏下的位置点击，模拟点击地板
 	centerX := tc.WindowX + tc.WindowW/2 + tc.OffsetX
 	// Y轴点击位置，选择窗口偏下位置，通常是地板所在位置
-	forwardY := tc.WindowY + int(float64(tc.WindowH)*0.7) + tc.OffsetY
+	forwardY := tc.WindowY + int(float64(tc.WindowH)*0.8) + tc.OffsetY
 
 	// 添加随机偏移，使移动更自然
 	randOffsetX := rand.Intn(40) - 20 // -20 到 20 之间的随机值

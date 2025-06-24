@@ -6,7 +6,6 @@ import (
 	"free-hands-onmyoji/pkg/onmyoji/window"
 	"free-hands-onmyoji/pkg/statemachine"
 	"free-hands-onmyoji/pkg/types"
-	"time"
 )
 
 // Move 移动任务
@@ -27,13 +26,13 @@ func (t *Move) Name() enums.TaskType {
 func (t *Move) Execute(controller statemachine.TaskController) error {
 	t.Count++ // 增加执行次数
 	// 等待一段时间，让角色移动
-	moveDelay := 800
 	attribute, _ := controller.GetAttribute(types.MoveCount)
 	// 等待移动完成
-	time.Sleep(time.Duration(moveDelay) * time.Millisecond)
+
 	_, _ = t.ClickFloor(165, 0)
 	// 如果设置了最大移动次数并且已达到，则切换到下一个任务
 	if attribute.(int) > 0 && t.Count >= attribute.(int) {
+		t.Count = 0 // 重置执行次数
 		logger.Info("已达到最大移动次数 %d，准备切换任务", attribute.(int))
 		err := controller.SetAttribute(types.Move, true) // 设置移动完成标志
 		if err != nil {
@@ -41,7 +40,6 @@ func (t *Move) Execute(controller statemachine.TaskController) error {
 		} else {
 			logger.Debug("成功设置移动完成标志 types.Move = true")
 		}
-		time.Sleep(300 * time.Millisecond) // 移动结束
 		logger.Info("移动结束，切换到寻怪任务")
 		controller.Next(enums.XunGuai) // 切换到下一个任务
 	}

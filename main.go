@@ -32,8 +32,11 @@ func main() {
 
 	sm := statemachine.NewStateMachine()
 	// Initialize tasks with the window position and size
-	k28.Registration(sm, windowInfo, config)
+	registrator := onmyoji.NewRegistrator(sm, windowInfo, config)
+	registrator.Registration(new(k28.K28Registrator))
 	logger.Info("状态机开始运行...")
+	window.ActiveWindow("BlueStacks", 0)
+	logger.Info("游戏窗口已激活，开始任务执行...")
 	logger.Info("当前任务: %s", sm.GetCurrentTask().Name())
 	logger.Info("----------------------------------------")
 	logger.Info("按下 Command+Shift+O 组合键可以停止程序运行")

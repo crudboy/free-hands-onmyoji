@@ -36,6 +36,7 @@ func (t *LevelCompletionDetector) Name() enums.TaskType {
 }
 func (t *LevelCompletionDetector) Execute(controller statemachine.TaskController) error {
 	t.runThreshold++
+	time.Sleep(200 * time.Millisecond) // 等待200毫秒，确保界面稳定
 	// 使用公共方法计算模板位置并添加随机偏移点击
 	clicked, err := t.ClickAtTemplatePositionWithRandomOffset(t.ImgTemplate.Image, 0.8)
 	if err != nil {
@@ -72,10 +73,11 @@ func (t *LevelCompletionDetector) Execute(controller statemachine.TaskController
 			logger.Info("结算任务执行完成，切换到寻怪任务")
 			controller.Next(enums.XunGuai) // 切换到寻怪任务
 			t.runThreshold = 0             // 重置运行次数阈值
+			return nil
 		}
 
-		logger.Info("未找到结算界面或相似度不足，跳过点击操作")
 	}
+	logger.Info("未找到结算界面或相似度不足，跳过点击操作")
 	return nil
 
 }

@@ -20,7 +20,6 @@ zhangjie_find_threshold = 2
 # 匹配小怪匹配不成功会进入移动环节
 xunguai_find_threshold = 2
 chest_wait_time = 500 # 宝箱寻找完成后等待页面切换时间，单位毫秒
-move_wait_time = 800 # 移动任务等待时间，单位毫秒
 `
 const configPath = "./config.toml"
 
@@ -37,7 +36,6 @@ type K28Config struct {
 	ZhangjieFindThreshold        int `toml:"zhangjie_find_threshold"`          // 章节任务寻找阈值
 	XunguaiFindThreshold         int `toml:"xunguai_find_threshold"`           // 寻怪任务寻找阈值
 	ChestWaitTime                int `toml:"chest_wait_time"`                  // 宝箱寻找完成后等待页面切换时间，单位毫秒
-	MoveWaitTime                 int `toml:"move_wait_time"`                   // 移动任务等待时间，单位毫秒
 }
 type BreakerConfig struct {
 }
@@ -51,7 +49,6 @@ func NewDefaultConfig() Config {
 			ZhangjieFindThreshold:        2,   // 默认章节任务寻找阈值为2
 			XunguaiFindThreshold:         2,   // 默认寻怪任务寻找阈值为2
 			ChestWaitTime:                500, // 默认宝箱等待时间为500毫秒
-			MoveWaitTime:                 800, // 默认移动任务等待时间为800毫秒
 
 		},
 	}

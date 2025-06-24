@@ -12,14 +12,14 @@ import (
 
 // ChapterDetector 章节检测任务
 type ChapterDetector struct {
-	TemplateImg entity.ImgInfo // 模板图片信息
+	ImgTemplate entity.ImgInfo // 模板图片信息
 	window.Window
 	conf onmyoji.K28Config
 }
 
 func newChapterDetectorTask(config onmyoji.Config, window window.Window, info entity.ImgInfo) *ChapterDetector {
 	return &ChapterDetector{
-		TemplateImg: info,
+		ImgTemplate: info,
 		Window:      window,
 		conf:        config.K28,
 	}
@@ -32,7 +32,7 @@ func (t *ChapterDetector) Execute(controller statemachine.TaskController) error 
 	t.Count++ // 增加执行次数
 
 	// 使用公共方法计算模板位置并添加随机偏移点击
-	clicked, err := t.ClickAtTemplatePositionWithRandomOffset(t.TemplateImg.Image, 0.8)
+	clicked, err := t.ClickAtTemplatePositionWithRandomOffset(t.ImgTemplate.Image, 0.8)
 	if err != nil {
 		return fmt.Errorf("模板图像匹配错误: %v", err)
 	}

@@ -10,13 +10,13 @@ import (
 
 // ExploreDetector 探索按钮检测任务
 type ExploreDetector struct {
-	TemplateImg   entity.ImgInfo
+	ImgTemplate   entity.ImgInfo
 	window.Window // 嵌入公共字段
 }
 
 func newExploreDetectorTask(window window.Window, info entity.ImgInfo) *ExploreDetector {
 	return &ExploreDetector{
-		TemplateImg: info,
+		ImgTemplate: info,
 		Window:      window,
 	}
 }
@@ -25,7 +25,7 @@ func (t *ExploreDetector) Name() enums.TaskType {
 }
 func (t *ExploreDetector) Execute(controller statemachine.TaskController) error {
 	// 使用公共方法计算模板位置并点击
-	clicked, err := t.ClickAtTemplatePosition(t.TemplateImg.Image, 0.8)
+	clicked, err := t.ClickAtTemplatePosition(t.ImgTemplate.Image, 0.8)
 
 	if err != nil {
 		return err

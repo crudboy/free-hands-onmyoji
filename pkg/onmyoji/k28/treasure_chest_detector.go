@@ -13,14 +13,14 @@ import (
 
 // TreasureChestDetector 宝箱检测任务
 type TreasureChestDetector struct {
-	TemplateImg   entity.ImgInfo // 模板图片信息
+	ImgTemplate   entity.ImgInfo // 模板图片信息
 	window.Window                // 嵌入公共字段
 	conf          onmyoji.K28Config
 }
 
 func newTreasureChestDetectorTask(conf onmyoji.Config, window window.Window, info entity.ImgInfo) *TreasureChestDetector {
 	return &TreasureChestDetector{
-		TemplateImg: info,
+		ImgTemplate: info,
 		Window:      window,
 		conf:        conf.K28,
 	}
@@ -32,7 +32,7 @@ func (t *TreasureChestDetector) Name() enums.TaskType {
 
 func (t *TreasureChestDetector) Execute(controller statemachine.TaskController) error {
 	// 使用公共方法计算模板位置并添加随机偏移点击
-	clicked, err := t.ClickAtTemplatePositionWithRandomOffset(t.TemplateImg.Image, 0.8)
+	clicked, err := t.ClickAtTemplatePositionWithRandomOffset(t.ImgTemplate.Image, 0.8)
 	if err != nil {
 		return fmt.Errorf("模板图像匹配错误: %v", err)
 	}

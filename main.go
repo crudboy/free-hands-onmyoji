@@ -64,7 +64,11 @@ func main() {
 		os.Exit(1)
 	}
 	logger.Info("状态机开始运行...")
-	window.ActiveWindow("BlueStacks", 0)
+	activeError := window.ActiveWindow("BlueStacks", 0)
+	if activeError != nil {
+		logger.Fatal("无法激活游戏窗口: %v", activeError)
+		os.Exit(1)
+	}
 	logger.Info("游戏窗口已激活，开始任务执行...")
 	logger.Info("当前任务: %s", sm.GetCurrentTask().Name())
 	logger.Info("----------------------------------------")

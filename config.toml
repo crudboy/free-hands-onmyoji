@@ -11,7 +11,7 @@ zhangjie_find_threshold = 2
 xunguai_find_threshold = 2
 # 宝箱寻找完后等待界面的时间间隔单位毫秒
 chest_wait_time = 800
-level_completion_wait_time = 600 // 结算检测时间间隔
+level_completion_wait_time = 600 # 结算检测时间间隔
 
 
 

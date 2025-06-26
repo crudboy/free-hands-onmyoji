@@ -37,3 +37,7 @@ func ActiveWindow(appName string, index int) (bool, error) {
 	logger.Info("成功激活进程 %d", ids[index])
 	return true, nil
 }
+func AlertNotify(title string, message string) {
+	robotgo.Alert(title, message)
+
+}

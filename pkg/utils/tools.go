@@ -3,6 +3,7 @@ package utils
 import (
 	"fmt"
 	"image"
+	"image/color"
 	"image/draw"
 	"image/png"
 	"math"
@@ -85,6 +86,9 @@ func SaveImg(img image.Image, path string) error {
 	}
 	defer f.Close()
 	err = png.Encode(f, img)
+	if err != nil {
+		return fmt.Errorf("failed to encode image: %w", err)
+	}
 	return nil
 }
 
@@ -95,4 +99,54 @@ func RandomInt(i int, i2 int) int {
 	// 使用带有时间种子的新随机源替代 rand.Seed
 	r := rand.New(rand.NewSource(time.Now().UnixNano()))
 	return r.Intn(i2-i+1) + i
+}
+
+func FindTempPosByDEBUG(outPath string, templateImg, captureImg image.Image) (int, int, float32) {
+	// 读取模板图片
+
+	// 使用gcv进行图片匹配
+	_, num, _, pos := gcv.FindImg(Jpg2RGBA(templateImg), Jpg2RGBA(captureImg))
+
+	// 如果找到匹配，在输出图像上标记匹配的区域
+	if num > 0 && pos.X >= 0 && pos.Y >= 0 {
+		// 创建一个可以绘制的图像副本
+		bounds := captureImg.Bounds()
+		outputImg := image.NewRGBA(bounds)
+		draw.Draw(outputImg, bounds, captureImg, bounds.Min, draw.Src)
+
+		// 绘制矩形标记匹配区域
+		templateBounds := templateImg.Bounds()
+		width, height := templateBounds.Dx(), templateBounds.Dy()
+
+		// 绘制矩形（由于没有直接的绘制矩形函数，我们可以绘制边框）
+		// 定义绿色
+		green := color.RGBA{0, 255, 0, 255}
+
+		// 绘制顶部和底部水平线
+		for x := pos.X; x < pos.X+width && x < bounds.Max.X; x++ {
+			if pos.Y >= 0 && pos.Y < bounds.Max.Y {
+				outputImg.Set(x, pos.Y, green)
+			}
+			if pos.Y+height-1 >= 0 && pos.Y+height-1 < bounds.Max.Y {
+				outputImg.Set(x, pos.Y+height-1, green)
+			}
+		}
+		// 绘制左侧和右侧垂直线
+		for y := pos.Y; y < pos.Y+height && y < bounds.Max.Y; y++ {
+			if pos.X >= 0 && pos.X < bounds.Max.X {
+				outputImg.Set(pos.X, y, green)
+			}
+			if pos.X+width-1 >= 0 && pos.X+width-1 < bounds.Max.X {
+				outputImg.Set(pos.X+width-1, y, green)
+			}
+		}
+
+		// 保存结果图像
+		err := SaveImg(outputImg, outPath)
+		if err != nil {
+			fmt.Printf("保存调试图像失败: %v\n", err)
+		}
+	}
+
+	return pos.X, pos.Y, num
 }

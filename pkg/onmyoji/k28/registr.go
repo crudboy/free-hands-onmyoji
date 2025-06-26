@@ -14,10 +14,10 @@ import (
 	"path/filepath"
 )
 
-type K28Registrator struct {
+type Registrator struct {
 }
 
-func (r *K28Registrator) Registration(machine *statemachine.StateMachine, info entity.WindowInfo, config onmyoji.Config, imgMap map[string]entity.ImgInfo) error {
+func (r Registrator) Registration(machine *statemachine.StateMachine, info entity.WindowInfo, config onmyoji.Config, imgMap map[string]entity.ImgInfo) error {
 	w := window.Window{
 		WindowX: info.WindowX,
 		WindowY: info.WindowY,
@@ -35,7 +35,7 @@ func (r *K28Registrator) Registration(machine *statemachine.StateMachine, info e
 
 	return nil
 }
-func (r *K28Registrator) LoadImageTemplates() (map[string]entity.ImgInfo, error) {
+func (r Registrator) LoadImageTemplates() (map[string]entity.ImgInfo, error) {
 
 	logger.Info("加载困28任务模板图片")
 

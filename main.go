@@ -1,18 +1,36 @@
 package main
 
 import (
+	"flag"
+	"fmt"
 	"free-hands-onmyoji/pkg/events"
 	"free-hands-onmyoji/pkg/logger"
 	"free-hands-onmyoji/pkg/onmyoji"
+	"free-hands-onmyoji/pkg/onmyoji/breaker"
 	"free-hands-onmyoji/pkg/onmyoji/k28"
 	"free-hands-onmyoji/pkg/onmyoji/window"
 	"free-hands-onmyoji/pkg/statemachine"
+	"os"
 	"time"
 )
 
 func main() {
+
+	flag.Usage = func() {
+		fmt.Printf("用法: %s -task <任务类型>\n", os.Args[0])
+		fmt.Println("任务类型:")
+		fmt.Println("  k28     - K28任务")
+		fmt.Println("  breaker - 突破任务")
+		fmt.Println("默认任务类型为 k28")
+		fmt.Println("示例: ./free-hands-onmyoji -task breaker")
+	}
+	taskType := flag.String("task", "breaker", "指定任务类型: k28 或 breaker")
+	displayID := flag.Int("display", -1, "指定显示器ID，默认为-1（主显示器）")
+	window.DisplayID = *displayID // 设置全局显示器ID
+	flag.Parse()
 	// 初始化日志系统
 	logger.Init()
+
 	// 加载配置文件
 	config, error := onmyoji.LoadDefaultConfig()
 	if error != nil {
@@ -25,7 +43,7 @@ func main() {
 	go events.ListenForExitKey(exitChan)
 	// 获取游戏窗口的位置和大小
 	logger.Info("正在获取游戏窗口位置和大小...")
-	windowInfo, err := window.GetWindowPosition("BlueStacks")
+	windowInfo, _, err := window.GetWindowPosition("BlueStacks")
 	if err != nil {
 		logger.Fatal("获取窗口信息失败: %v", err)
 	}
@@ -33,7 +51,18 @@ func main() {
 	sm := statemachine.NewStateMachine()
 	// Initialize tasks with the window position and size
 	registrator := onmyoji.NewRegistrator(sm, windowInfo, config)
-	registrator.Registration(new(k28.K28Registrator))
+	taskName := *taskType
+	switch taskName {
+	case "k28":
+		logger.Info("注册K28任务...")
+		registrator.Registration(new(k28.Registrator))
+	case "breaker":
+		logger.Info("注册突破任务...")
+		registrator.Registration(new(breaker.Registrator))
+	default:
+		logger.Fatal("未知任务类型: %s", taskName)
+		os.Exit(1)
+	}
 	logger.Info("状态机开始运行...")
 	window.ActiveWindow("BlueStacks", 0)
 	logger.Info("游戏窗口已激活，开始任务执行...")

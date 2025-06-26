@@ -2,29 +2,27 @@ package breaker
 
 import (
 	"free-hands-onmyoji/pkg/enums"
-	"free-hands-onmyoji/pkg/onmyoji"
 	"free-hands-onmyoji/pkg/onmyoji/entity"
 	"free-hands-onmyoji/pkg/onmyoji/window"
 	"free-hands-onmyoji/pkg/statemachine"
+	"os"
 )
 
-type AttackDetector struct {
+type FailDetector struct {
 	ImgTemplate entity.ImgInfo // 模板图片信息
 	window.Window
-	conf onmyoji.BreakerConfig
 }
 
-func newAttackDetector(window window.Window, info entity.ImgInfo, config onmyoji.Config) *AttackDetector {
-	return &AttackDetector{
+func newBreakerFailDetector(window window.Window, info entity.ImgInfo) *FailDetector {
+	return &FailDetector{
 		ImgTemplate: info,
 		Window:      window,
-		conf:        config.Breaker,
 	}
 }
-func (t *AttackDetector) Name() enums.TaskType {
-	return enums.BreakerAttack
+func (t *FailDetector) Name() enums.TaskType {
+	return enums.BreakerFail
 }
-func (t *AttackDetector) Execute(controller statemachine.TaskController) error {
+func (t *FailDetector) Execute(controller statemachine.TaskController) error {
 	// 使用公共方法计算模板位置并添加随机偏移点击
 	clicked, err := t.ClickAtTemplatePositionWithRandomOffset(t.ImgTemplate.Image, 0.8)
 	if err != nil {
@@ -32,7 +30,9 @@ func (t *AttackDetector) Execute(controller statemachine.TaskController) error {
 	}
 
 	if clicked {
-		controller.Next(enums.BreakerPlayer) // 切换到玩家检测任务
+		window.AlertNotify("突破失败", "检测到突破失败状态，请检查游戏状态或重试。")
+		os.Exit(1) // 退出程序或执行其他失败处理逻辑
 	}
+
 	return nil
 }

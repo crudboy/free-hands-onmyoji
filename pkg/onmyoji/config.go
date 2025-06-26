@@ -11,7 +11,7 @@ const defaultConfig = `
 # 阴阳师自动化配置文件 默认配置
 [k28]
 # 结算阀值：多少次结算后进入下一个状态
-jiesuan_threshold = 7
+level_completion_threshold = 7
 
 # 刷几次小怪后尝试检查Boss的次数
 after_minion_attempts_boss_check = 3
@@ -20,6 +20,7 @@ zhangjie_find_threshold = 2
 # 匹配小怪匹配不成功会进入移动环节
 xunguai_find_threshold = 2
 chest_wait_time = 500 # 宝箱寻找完成后等待页面切换时间，单位毫秒
+level_completion_wait_time = 600 # 结算等待时间，单位毫秒
 `
 const configPath = "./config.toml"
 
@@ -31,11 +32,12 @@ type Config struct {
 
 // K28Config 御魂副本相关配置
 type K28Config struct {
-	JiesuanThreshold             int `toml:"jiesuan_threshold"`                // 结算阀值
+	LevelCompletionThreshold     int `toml:"level_completion_threshold"`       // 结算阀值
 	AfterMinionAttemptsBossCheck int `toml:"after_minion_attempts_boss_check"` // 刷几次小怪后尝试检查Boss的次数
 	ZhangjieFindThreshold        int `toml:"zhangjie_find_threshold"`          // 章节任务寻找阈值
 	XunguaiFindThreshold         int `toml:"xunguai_find_threshold"`           // 寻怪任务寻找阈值
 	ChestWaitTime                int `toml:"chest_wait_time"`                  // 宝箱寻找完成后等待页面切换时间，单位毫秒
+	LevelCompletionWaitTime      int `toml:"level_completion_wait_time"`       // 结算等待时间，单位毫秒
 }
 type BreakerConfig struct {
 }
@@ -44,11 +46,12 @@ type BreakerConfig struct {
 func NewDefaultConfig() Config {
 	return Config{
 		K28: K28Config{
-			JiesuanThreshold:             7,   // 默认结算阀值为7
+			LevelCompletionThreshold:     7,   // 默认结算阀值为7
 			AfterMinionAttemptsBossCheck: 3,   // 默认刷3次小怪后检查Boss
 			ZhangjieFindThreshold:        2,   // 默认章节任务寻找阈值为2
 			XunguaiFindThreshold:         2,   // 默认寻怪任务寻找阈值为2
 			ChestWaitTime:                500, // 默认宝箱等待时间为500毫秒
+			LevelCompletionWaitTime:      600, // 默认结算等待时间为600毫秒
 
 		},
 	}

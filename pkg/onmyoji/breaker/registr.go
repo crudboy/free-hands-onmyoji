@@ -12,12 +12,13 @@ import (
 	"image"
 	"os"
 	"path/filepath"
+	"strings"
 )
 
-type BreakerRegistr struct {
+type Registrator struct {
 }
 
-func (r *BreakerRegistr) Registration(machine *statemachine.StateMachine, info entity.WindowInfo, config onmyoji.Config, imgMap map[string]entity.ImgInfo) error {
+func (r Registrator) Registration(machine *statemachine.StateMachine, info entity.WindowInfo, config onmyoji.Config, imgMap map[string]entity.ImgInfo) error {
 	w := window.Window{
 		WindowX: info.WindowX,
 		WindowY: info.WindowY,
@@ -25,18 +26,34 @@ func (r *BreakerRegistr) Registration(machine *statemachine.StateMachine, info e
 		WindowW: info.WindowW,
 	}
 
+	imgList := convertImgList(imgMap)
+	onmyoji.Registration(machine, newPlayerDetector(w, imgList))
 	onmyoji.Registration(machine, newAttackDetector(w, imgMap[string(enums.BreakerAttack)], config))
+	onmyoji.Registration(machine, newRewardDetector(w, imgMap[string(enums.BreakerReward)]))
+	onmyoji.Registration(machine, newBreakerFailDetector(w, imgMap[string(enums.BreakerFail)]))
+	onmyoji.Registration(machine, newBreakerWinDetector(w, imgMap[string(enums.BreakerWin)]))
 
 	return nil
 }
-func LoadImageTemplates() (map[string]entity.ImgInfo, error) {
 
-	logger.Info("加载困28任务模板图片")
+func convertImgList(imgMap map[string]entity.ImgInfo) []entity.ImgInfo {
+	imgList := make([]entity.ImgInfo, 0, len(imgMap))
+	for imgName, imgInfo := range imgMap {
+		if strings.HasPrefix(imgName, "breaker_player_") {
+			imgList = append(imgList, imgInfo)
+		}
+		// 注册每个图片
+	}
+	return imgList
+}
+func (r Registrator) LoadImageTemplates() (map[string]entity.ImgInfo, error) {
+
+	logger.Info("加载突破任务模板图片")
 
 	// 初始化模板图片map
 	imgMap := make(map[string]entity.ImgInfo)
 
-	imgPath := "./k28/"
+	imgPath := "./breaker/"
 	files, err := os.ReadDir(imgPath)
 	if err != nil {
 		panic(fmt.Errorf("读取图片目录失败: %v", err))
@@ -72,17 +89,35 @@ func LoadImageTemplates() (map[string]entity.ImgInfo, error) {
 	}
 
 	// 检查是否成功加载了所有必要的图片
-	requiredImages := []string{
-		string(enums.ZhangJie),
-		string(enums.JinRu),
-		string(enums.XunGuai),
-		string(enums.JieSuan),
-		string(enums.Boss),
-		string(enums.BaoXiang),
+	requiredImages := []func() (string, bool){
+		func() (string, bool) {
+			_, exists := imgMap[string(enums.BreakerAttack)]
+			return string(enums.BreakerAttack), exists
+		},
+		func() (string, bool) {
+			_, exists := imgMap[string(enums.BreakerReward)]
+			return string(enums.BreakerReward), exists
+		},
+		func() (string, bool) {
+			_, exists := imgMap[string(enums.BreakerFail)]
+			return string(enums.BreakerFail), exists
+		},
+		func() (string, bool) {
+			_, exists := imgMap[string(enums.BreakerWin)]
+			return string(enums.BreakerWin), exists
+		},
+		func() (string, bool) {
+			for imgName := range imgMap {
+				if strings.HasPrefix(imgName, "breaker_player_") {
+					return imgName, true
+				}
+			}
+			return "breaker_player_", false
+		},
 	}
 
-	for _, imgName := range requiredImages {
-		if _, exists := imgMap[imgName]; !exists {
+	for _, imgCheck := range requiredImages {
+		if imgName, exists := imgCheck(); !exists {
 			panic(fmt.Errorf("模板图片 '%s' 未找到，请检查图片目录: %s", imgName, imgPath))
 		}
 	}

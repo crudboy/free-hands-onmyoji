@@ -12,11 +12,11 @@ const (
 	ZhangJie TaskType = "ZhangJie" // 章节任务
 	JinRu    TaskType = "JinRu"    // 进入任务
 	// ------------突破常量-------------------------
+
 	BreakerPlayer TaskType = "breaker_player_" // 寻找对手
 	BreakerAttack TaskType = "breaker_attack"  // 进攻
-	ToPoJieSuan   TaskType = "ToPoJieSuan"     // 突破结算
-	ToPoJieRun    TaskType = "ToPoJieRun"      // 突破进入
-	ToPoShiBai    TaskType = "ToPoShiBai"      // 突破失败
-	ToPoShengLi   TaskType = "ToPoShengLi"     // 突破胜利
+	BreakerReward TaskType = "breaker_reward"  // 奖励
+	BreakerFail   TaskType = "breaker_fail"    // 突破失败
+	BreakerWin    TaskType = "breaker_win"     // 突破胜利
 
 )

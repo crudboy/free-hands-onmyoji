@@ -13,13 +13,14 @@ import (
 
 // Window 定义任务的公共字段
 type Window struct {
-	WindowX int // 程序窗口在屏幕上的起始位置X（偏移量）
-	WindowY int // 程序窗口在屏幕上的起始位置Y（偏移量）
-	WindowH int // 截图区域的高度
-	WindowW int // 截图区域的宽度
-	OffsetX int // 点击位置的X轴偏移调整（可选）
-	OffsetY int // 点击位置的Y轴偏移调整（可选）
-	Count   int // 任务执行计数
+	WindowX     int         // 程序窗口在屏幕上的起始位置X（偏移量）
+	WindowY     int         // 程序窗口在屏幕上的起始位置Y（偏移量）
+	WindowH     int         // 截图区域的高度
+	WindowW     int         // 截图区域的宽度
+	OffsetX     int         // 点击位置的X轴偏移调整（可选）
+	OffsetY     int         // 点击位置的Y轴偏移调整（可选）
+	Count       int         // 任务执行计数
+	CaptureArea CaptureArea // 截图区域
 }
 
 // CalculateTemplatePosition 计算模板图片在屏幕中的位置
@@ -29,19 +30,41 @@ type Window struct {
 // - 相似度
 // - 是否找到图像
 // - 错误信息
-func (tc *Window) CalculateTemplatePosition(templateImage image.Image) (int, int, float32, bool, error) {
+func (tc *Window) calculateTemplatePosition(templateImage image.Image, similarityThreshold float32) (int, int, float32, bool, error) {
+	var (
+		img image.Image
+		err error
+	)
+
+	if DisplayID != -1 {
+
+		robotgo.DisplayID = DisplayID // 设置robotgo的显示器ID
+		// 这里是因为当程序在扩展屏幕时截图会报错 而且WindowX, WindowY, WindowW, WindowH通过Apple Script计算出的程序坐标是相对于主显示器的扩展屏幕也属于主显示器的一部分
+		//CaptureImg 只能截取指定显示器的坐标而且计算的坐标是基于当前显示器的0,0坐标 直接给他Apple Script的坐标会报错
+
+		img, err = robotgo.CaptureImg(tc.CaptureArea.Y, tc.CaptureArea.X, tc.CaptureArea.W, tc.CaptureArea.H)
+		robotgo.DisplayID = -1 // 重置为默认显示器ID 不修改可能会导致后续点击坐标出现错误
+
+	} else {
+		img, err = robotgo.CaptureImg(tc.WindowX, tc.WindowY, tc.WindowW, tc.WindowH)
+	}
 	// 窗口区域截图
-	img, err := robotgo.CaptureImg(tc.WindowX, tc.WindowY, tc.WindowW, tc.WindowH)
+
 	if err != nil {
+		logger.Error("截图失败: %v", err)
 		return 0, 0, 0, false, err
 	}
-
 	// 计算出模板图像在窗口区域内的坐标
 	tempPosX, tempPosY, num := utils.FindTempPos(templateImage, img)
 
-	if num == 0 {
+	if num <= 0 {
 		logger.Warn("未找到模板图像，无法执行任务")
 		return 0, 0, num, false, nil
+	}
+	if num < similarityThreshold {
+		logger.Warn("模板匹配相似度过低: %.3f，低于阈值 %.3f", num, similarityThreshold)
+		return tempPosX, tempPosY, num, false, nil
+
 	}
 
 	// 获取模板图像的尺寸，用于计算中心点
@@ -80,7 +103,7 @@ func (tc *Window) ClickAtTemplatePosition(templateImage image.Image, similarityT
 	if similarityThreshold <= 0.5 {
 		return false, fmt.Errorf("相似度阈值过低，无法执行点击操作")
 	}
-	screenPosX, screenPosY, num, found, err := tc.CalculateTemplatePosition(templateImage)
+	screenPosX, screenPosY, num, found, err := tc.calculateTemplatePosition(templateImage, similarityThreshold)
 	if err != nil {
 		return false, err
 	}
@@ -98,12 +121,12 @@ func (tc *Window) ClickAtTemplatePosition(templateImage image.Image, similarityT
 // ClickAtTemplatePositionWithRandomOffset 计算模板图片位置并添加随机偏移后点击
 // 增加随机性，让点击更像人为操作
 func (tc *Window) ClickAtTemplatePositionWithRandomOffset(templateImage image.Image, similarityThreshold float32) (bool, error) {
-	screenPosX, screenPosY, num, found, err := tc.CalculateTemplatePosition(templateImage)
+	screenPosX, screenPosY, num, found, err := tc.calculateTemplatePosition(templateImage, similarityThreshold)
 	if err != nil {
 		return false, err
 	}
 
-	if !found || num <= similarityThreshold {
+	if !found || num < similarityThreshold {
 		logger.Warn("模板匹配相似度过低: %.3f，跳过点击操作", num)
 		return false, nil
 	}
@@ -112,7 +135,7 @@ func (tc *Window) ClickAtTemplatePositionWithRandomOffset(templateImage image.Im
 	_, randomX := utils.RandomNormalInt64(int64(screenPosX-20), int64(screenPosX+20), int64(screenPosX), 10)
 	_, randomY := utils.RandomNormalInt64(int64(screenPosY-20), int64(screenPosY+20), int64(screenPosY), 10)
 
-	logger.Info("鼠标移动到: (%d, %d)", randomX, randomY)
+	logger.Info("鼠标移动到: (%d, %d) 相似度: %.3f", randomX, randomY, num)
 	robotgo.Move(int(randomX), int(randomY))
 	time.Sleep(200 * time.Millisecond) // 等待鼠标移动完成
 	robotgo.Click("left")

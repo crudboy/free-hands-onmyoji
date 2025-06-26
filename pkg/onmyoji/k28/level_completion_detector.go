@@ -36,14 +36,14 @@ func (t *LevelCompletionDetector) Name() enums.TaskType {
 }
 func (t *LevelCompletionDetector) Execute(controller statemachine.TaskController) error {
 	t.runThreshold++
-	time.Sleep(200 * time.Millisecond) // 等待200毫秒，确保界面稳定
+	time.Sleep(time.Duration(t.conf.LevelCompletionWaitTime) * time.Millisecond) // 等待600毫秒，确保界面稳定
 	// 使用公共方法计算模板位置并添加随机偏移点击
 	clicked, err := t.ClickAtTemplatePositionWithRandomOffset(t.ImgTemplate.Image, 0.8)
 	if err != nil {
 		return fmt.Errorf("模板图像匹配错误: %v", err)
 	}
-	if t.runThreshold > t.conf.JiesuanThreshold {
-		logger.Warn("结算任务执行次数超过阈值 %d，跳过结算点击操作，进入寻怪任务", t.conf.JiesuanThreshold)
+	if t.runThreshold > t.conf.LevelCompletionThreshold {
+		logger.Warn("结算任务执行次数超过阈值 %d，跳过结算点击操作，进入寻怪任务", t.conf.LevelCompletionThreshold)
 		controller.Next(enums.XunGuai) // 切换到寻怪任务
 		t.runThreshold = 0             // 重置运行次数阈值
 		return nil

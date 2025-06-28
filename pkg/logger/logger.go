@@ -169,7 +169,9 @@ func (e *Entry) Fatal(msg string, args ...interface{}) {
 
 // Info 封装的信息级别日志
 func Info(msg string, args ...interface{}) {
-	defaultSugar.Infof(msg, args...)
+	green := "\033[32m"
+	reset := "\033[0m"
+	defaultSugar.Infof(green+msg+reset, args...)
 }
 
 // Debug 封装的调试级别日志

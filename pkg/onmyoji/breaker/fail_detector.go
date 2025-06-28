@@ -2,6 +2,7 @@ package breaker
 
 import (
 	"free-hands-onmyoji/pkg/enums"
+	"free-hands-onmyoji/pkg/logger"
 	"free-hands-onmyoji/pkg/onmyoji/entity"
 	"free-hands-onmyoji/pkg/onmyoji/window"
 	"free-hands-onmyoji/pkg/statemachine"
@@ -33,6 +34,8 @@ func (t *FailDetector) Execute(controller statemachine.TaskController) error {
 		window.AlertNotify("突破失败", "检测到突破失败状态，请检查游戏状态或重试。")
 		os.Exit(1) // 退出程序或执行其他失败处理逻辑
 	}
+	logger.Info("未检测到突破失败，检测是否成功")
+	controller.Next(enums.BreakerWin) // 切换到成功状态
 
 	return nil
 }

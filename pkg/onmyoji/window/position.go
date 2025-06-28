@@ -3,7 +3,6 @@ package window
 import (
 	"fmt"
 	"free-hands-onmyoji/pkg/logger"
-	"free-hands-onmyoji/pkg/onmyoji/entity"
 
 	"github.com/andybrewer/mack"
 	"github.com/vcaesar/screenshot"
@@ -14,17 +13,11 @@ import (
 //   - appName: 应用程序名称，例如 "BlueStacks"
 //
 // 返回：
-//   - entity.WindowInfo: 包含窗口位置和大小的信息
+//   - WindowInfo: 包含窗口位置和大小的信息
 //   - error: 如果获取失败，返回错误
 var DisplayID int = -1 // 默认值为-1，表示使用主显示器
-type CaptureArea struct {
-	X int // 区域左上角X坐标
-	Y int // 区域左上角Y坐标
-	W int // 区域宽度
-	H int // 区域高度
-}
 
-func GetWindowPosition(appName string) (entity.WindowInfo, CaptureArea, error) {
+func GetWindowPosition(appName string) (Window, error) {
 	displayId := 0
 	if DisplayID != -1 {
 		displayId = DisplayID
@@ -33,7 +26,7 @@ func GetWindowPosition(appName string) (entity.WindowInfo, CaptureArea, error) {
 	return GetWindowPositionByMaster(appName)
 }
 
-func GetWindowPositionByMaster(appName string) (entity.WindowInfo, CaptureArea, error) {
+func GetWindowPositionByMaster(appName string) (Window, error) {
 
 	script := fmt.Sprintf(`
 tell application "System Events"
@@ -45,23 +38,29 @@ end tell
 
 	tell, err := mack.Tell("System Events", script)
 	if err != nil {
-		return entity.WindowInfo{}, CaptureArea{}, fmt.Errorf("无法获取窗口信息: %v", err)
+		return Window{}, fmt.Errorf("无法获取窗口信息: %v", err)
 	}
 
 	var x, y, w, h int
 	_, err = fmt.Sscanf(tell, "%d, %d, %d, %d", &x, &y, &w, &h)
 	if err != nil {
-		return entity.WindowInfo{}, CaptureArea{}, fmt.Errorf("解析窗口位置信息失败: %v", err)
+		return Window{}, fmt.Errorf("解析窗口位置信息失败: %v", err)
 	}
 
 	logger.Info("获取窗口位置和大小: 位置(%d,%d), 大小(%d,%d)", x, y, w, h)
 
-	return entity.WindowInfo{
+	return Window{
 		WindowX: x,
 		WindowY: y,
 		WindowW: w,
 		WindowH: h,
-	}, CaptureArea{X: x, Y: y, W: w, H: h}, nil
+		CaptureArea: CaptureArea{
+			X: x,
+			Y: y,
+			W: w,
+			H: h,
+		},
+	}, nil
 }
 
 // GetWindowPositionOnSecondDisplay 获取特定应用窗口相对于第二显示器的位置和大小信息
@@ -69,24 +68,24 @@ end tell
 //   - appName: 应用程序名称，例如 "BlueStacks"
 //
 // 返回：
-//   - entity.WindowInfo: 包含窗口相对于第二显示器位置和大小的信息
+//   - Window: 包含窗口相对于第二显示器位置和大小的信息
 //   - error: 如果获取失败，返回错误
-func GetWindowPositionOnSecondDisplay(appName string, displayId int) (entity.WindowInfo, CaptureArea, error) {
+func GetWindowPositionOnSecondDisplay(appName string, displayId int) (Window, error) {
 	// 首先获取窗口在主屏幕上的位置
-	mainScreenPosition, _, err := GetWindowPosition(appName)
+	mainScreenPosition, err := GetWindowPositionByMaster(appName)
 	logger.Debug("获取主屏幕窗口位置: %+v", mainScreenPosition)
 	if err != nil {
-		return entity.WindowInfo{}, CaptureArea{}, fmt.Errorf("获取主屏幕窗口位置失败: %v", err)
+		return Window{}, fmt.Errorf("获取主屏幕窗口位置失败: %v", err)
 	}
 
 	// 获取所有显示器的信息
 	displays, err := getDisplaysInfo()
 	if err != nil {
-		return entity.WindowInfo{}, CaptureArea{}, fmt.Errorf("获取显示器信息失败: %v", err)
+		return Window{}, fmt.Errorf("获取显示器信息失败: %v", err)
 	}
 
 	if len(displays) < 2 {
-		return entity.WindowInfo{}, CaptureArea{}, fmt.Errorf("未检测到第二显示器")
+		return Window{}, fmt.Errorf("未检测到第二显示器")
 	}
 
 	// 计算相对于第二显示器的位置
@@ -109,13 +108,13 @@ func GetWindowPositionOnSecondDisplay(appName string, displayId int) (entity.Win
 
 	logger.Debug("窗口在第二显示器上的位置: (%d,%d), 大小(%d,%d)",
 		xOnSecondDisplay, yOnSecondDisplay, mainScreenPosition.WindowW, mainScreenPosition.WindowH)
-
-	return mainScreenPosition, CaptureArea{
+	mainScreenPosition.CaptureArea = CaptureArea{
 		X: xOnSecondDisplay,
 		Y: yOnSecondDisplay,
 		W: mainScreenPosition.WindowW,
 		H: mainScreenPosition.WindowH,
-	}, nil
+	}
+	return mainScreenPosition, nil
 }
 
 // DisplayInfo 存储显示器的位置和大小信息
@@ -147,4 +146,11 @@ func getDisplaysInfo() ([]DisplayInfo, error) {
 			bounds.Min.X+bounds.Dx(), bounds.Min.Y+bounds.Dy())
 	}
 	return displays, nil
+}
+func SetScaleWindow(appName string, width, height int) {
+	mack.Tell("System Events", fmt.Sprintf(`tell application "System Events"
+ tell application process "%s"
+  set size of window 1 to {%d, %d}
+ end tell
+end tell`, appName, width, height))
 }

@@ -3,12 +3,13 @@ package onmyoji
 import (
 	"free-hands-onmyoji/pkg/logger"
 	"free-hands-onmyoji/pkg/onmyoji/entity"
+	"free-hands-onmyoji/pkg/onmyoji/window"
 	"free-hands-onmyoji/pkg/statemachine"
 )
 
 type TaskRegistrator interface {
 	// Registration RegisterTasks 注册所有特定模式的任务到状态机
-	Registration(*statemachine.StateMachine, entity.WindowInfo, Config, map[string]entity.ImgInfo) error
+	Registration(*statemachine.StateMachine, window.Window, Config, map[string]entity.ImgInfo) error
 
 	// LoadImageTemplates 加载图片模板
 	LoadImageTemplates() (map[string]entity.ImgInfo, error)
@@ -16,11 +17,12 @@ type TaskRegistrator interface {
 type Registrator struct {
 	machine    *statemachine.StateMachine // 状态机
 	config     Config                     // 任务配置
-	windowInfo entity.WindowInfo
+	windowInfo window.Window
 	imgMap     map[string]entity.ImgInfo // 模板图片信息
+
 }
 
-func NewRegistrator(machine *statemachine.StateMachine, windowInfo entity.WindowInfo, config Config) *Registrator {
+func NewRegistrator(machine *statemachine.StateMachine, windowInfo window.Window, config Config) *Registrator {
 	return &Registrator{
 		machine:    machine,
 		config:     config,

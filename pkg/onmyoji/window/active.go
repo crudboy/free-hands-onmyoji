@@ -3,6 +3,7 @@ package window
 import (
 	"fmt"
 	"free-hands-onmyoji/pkg/logger"
+	"time"
 
 	"github.com/go-vgo/robotgo"
 )
@@ -35,8 +36,12 @@ func ActiveWindow(appName string, index int) error {
 	robotgo.ActivePid(ids[index])
 
 	logger.Info("成功激活进程 %d", ids[index])
+	//调整窗口大小
+	time.Sleep(2000 * time.Millisecond) // 等待窗口激活
+	SetScaleWindow(appName, 805, 485)
 	return nil
 }
+
 func AlertNotify(title string, message string) {
 	robotgo.Alert(title, message)
 

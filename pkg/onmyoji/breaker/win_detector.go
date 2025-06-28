@@ -6,7 +6,6 @@ import (
 	"free-hands-onmyoji/pkg/onmyoji/entity"
 	"free-hands-onmyoji/pkg/onmyoji/window"
 	"free-hands-onmyoji/pkg/statemachine"
-	"time"
 )
 
 // BreakerWinDetector 突破胜利检测器
@@ -31,9 +30,11 @@ func (t *BreakerWinDetector) Execute(controller statemachine.TaskController) err
 	}
 
 	if clicked {
-		logger.Info("检测到突破胜利，开始奖励检测")
-		time.Sleep(500 * time.Millisecond)   // 等待500毫秒以确保奖励界面加载完成
+		logger.Info("检测到突破胜利，检测是否有奖励")
 		controller.Next(enums.BreakerReward) //  检测一次奖励状态
+		return nil
 	}
+	logger.Info("未检测到突破胜利， 尝试检测是否失败")
+	controller.Next(enums.BreakerFail) // 切换到失败状态
 	return nil
 }

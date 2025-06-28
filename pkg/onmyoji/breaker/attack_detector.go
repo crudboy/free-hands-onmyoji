@@ -27,6 +27,7 @@ func (t *AttackDetector) Name() enums.TaskType {
 }
 func (t *AttackDetector) Execute(controller statemachine.TaskController) error {
 	// 使用公共方法计算模板位置并添加随机偏移点击
+	logger.Info("开始执行攻击检测任务，使用模板: %s", t.ImgTemplate.Path)
 	clicked, err := t.ClickAtTemplatePositionWithRandomOffset(t.ImgTemplate.Image, 0.8)
 	if err != nil {
 		return err

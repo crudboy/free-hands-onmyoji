@@ -17,13 +17,7 @@ import (
 type Registrator struct {
 }
 
-func (r Registrator) Registration(machine *statemachine.StateMachine, info entity.WindowInfo, config onmyoji.Config, imgMap map[string]entity.ImgInfo) error {
-	w := window.Window{
-		WindowX: info.WindowX,
-		WindowY: info.WindowY,
-		WindowH: info.WindowH,
-		WindowW: info.WindowW,
-	}
+func (r Registrator) Registration(machine *statemachine.StateMachine, w window.Window, config onmyoji.Config, imgMap map[string]entity.ImgInfo) error {
 
 	onmyoji.Registration(machine, newChapterDetectorTask(config, w, imgMap[string(enums.ZhangJie)]))
 	onmyoji.Registration(machine, newExploreDetectorTask(w, imgMap[string(enums.JinRu)]))

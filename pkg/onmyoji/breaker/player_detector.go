@@ -9,13 +9,14 @@ import (
 	"time"
 )
 
-// PlayerDetector 玩家检测器
+// PlayerDetector
 type PlayerDetector struct {
 	ImgTemplates []entity.ImgInfo // 模板图片信息
 	window.Window
 }
 
 func newPlayerDetector(window window.Window, templates []entity.ImgInfo) *PlayerDetector {
+	logger.Info("创建玩家检测器，模板数量: %d", len(templates))
 	return &PlayerDetector{
 		ImgTemplates: templates,
 		Window:       window,

@@ -12,6 +12,8 @@ import (
 	"free-hands-onmyoji/pkg/statemachine"
 	"os"
 	"time"
+
+	"github.com/go-vgo/robotgo"
 )
 
 func main() {
@@ -26,11 +28,11 @@ func main() {
 	}
 	taskType := flag.String("task", "breaker", "指定任务类型: k28 或 breaker")
 	displayID := flag.Int("display", -1, "指定显示器ID，默认为-1（主显示器）")
-	window.DisplayID = *displayID // 设置全局显示器ID
 	flag.Parse()
+	window.DisplayID = *displayID
+	robotgo.DisplayID = *displayID // 设置robotgo的显示器ID
 	// 初始化日志系统
 	logger.Init()
-
 	// 加载配置文件
 	config, error := onmyoji.LoadDefaultConfig()
 	if error != nil {
@@ -43,13 +45,25 @@ func main() {
 	go events.ListenForExitKey(exitChan)
 	// 获取游戏窗口的位置和大小
 	logger.Info("正在获取游戏窗口位置和大小...")
-	windowInfo, _, err := window.GetWindowPosition("BlueStacks")
+	activeError := window.ActiveWindow("BlueStacks", 0)
+	if activeError != nil {
+		logger.Fatal("无法激活游戏窗口: %v", activeError)
+		os.Exit(1)
+	}
+
+	windowInfo, err := window.GetWindowPosition("BlueStacks")
+	logger.Info("获取到游戏窗口信息: %v", windowInfo)
 	if err != nil {
 		logger.Fatal("获取窗口信息失败: %v", err)
 	}
 
 	sm := statemachine.NewStateMachine()
 	// Initialize tasks with the window position and size
+	if window.DisplayID != -1 {
+		// 如果是第二块显示器，设置偏移量 调试发现在扩展屏幕中会出现偏移问题 但是在主显示器中不会出现偏移问题
+		windowInfo.OffsetX = 15
+	}
+
 	registrator := onmyoji.NewRegistrator(sm, windowInfo, config)
 	taskName := *taskType
 	switch taskName {
@@ -64,11 +78,6 @@ func main() {
 		os.Exit(1)
 	}
 	logger.Info("状态机开始运行...")
-	activeError := window.ActiveWindow("BlueStacks", 0)
-	if activeError != nil {
-		logger.Fatal("无法激活游戏窗口: %v", activeError)
-		os.Exit(1)
-	}
 	logger.Info("游戏窗口已激活，开始任务执行...")
 	logger.Info("当前任务: %s", sm.GetCurrentTask().Name())
 	logger.Info("----------------------------------------")

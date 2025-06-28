@@ -18,33 +18,31 @@ import (
 type Registrator struct {
 }
 
-func (r Registrator) Registration(machine *statemachine.StateMachine, info entity.WindowInfo, config onmyoji.Config, imgMap map[string]entity.ImgInfo) error {
-	w := window.Window{
-		WindowX: info.WindowX,
-		WindowY: info.WindowY,
-		WindowH: info.WindowH,
-		WindowW: info.WindowW,
-	}
+func (r Registrator) Registration(machine *statemachine.StateMachine, w window.Window, config onmyoji.Config, imgMap map[string]entity.ImgInfo) error {
 
-	imgList := convertImgList(imgMap)
+	imgList, rewardList := convertImgList(imgMap)
 	onmyoji.Registration(machine, newPlayerDetector(w, imgList))
 	onmyoji.Registration(machine, newAttackDetector(w, imgMap[string(enums.BreakerAttack)], config))
-	onmyoji.Registration(machine, newRewardDetector(w, imgMap[string(enums.BreakerReward)]))
+	onmyoji.Registration(machine, newRewardDetector(w, rewardList))
 	onmyoji.Registration(machine, newBreakerFailDetector(w, imgMap[string(enums.BreakerFail)]))
 	onmyoji.Registration(machine, newBreakerWinDetector(w, imgMap[string(enums.BreakerWin)]))
 
 	return nil
 }
 
-func convertImgList(imgMap map[string]entity.ImgInfo) []entity.ImgInfo {
+func convertImgList(imgMap map[string]entity.ImgInfo) ([]entity.ImgInfo, []entity.ImgInfo) {
 	imgList := make([]entity.ImgInfo, 0, len(imgMap))
+	rewardList := make([]entity.ImgInfo, 0, len(imgMap))
 	for imgName, imgInfo := range imgMap {
 		if strings.HasPrefix(imgName, "breaker_player_") {
 			imgList = append(imgList, imgInfo)
 		}
+		if strings.HasPrefix(imgName, "breaker_reward_") {
+			rewardList = append(rewardList, imgInfo)
+		}
 		// 注册每个图片
 	}
-	return imgList
+	return imgList, rewardList
 }
 func (r Registrator) LoadImageTemplates() (map[string]entity.ImgInfo, error) {
 
@@ -95,8 +93,12 @@ func (r Registrator) LoadImageTemplates() (map[string]entity.ImgInfo, error) {
 			return string(enums.BreakerAttack), exists
 		},
 		func() (string, bool) {
-			_, exists := imgMap[string(enums.BreakerReward)]
-			return string(enums.BreakerReward), exists
+			for imgName := range imgMap {
+				if strings.HasPrefix(imgName, "breaker_reward_") {
+					return imgName, true
+				}
+			}
+			return "breaker_reward_", false
 		},
 		func() (string, bool) {
 			_, exists := imgMap[string(enums.BreakerFail)]

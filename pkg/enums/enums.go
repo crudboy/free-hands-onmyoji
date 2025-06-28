@@ -4,13 +4,14 @@ type TaskType string
 
 const (
 	// ------------k28常量-------------------------
-	Move     TaskType = "Move"     // 移动
-	XunGuai  TaskType = "XunGuai"  // 寻怪任务
-	JieSuan  TaskType = "JieSuan"  // 匹配结算
-	Boss     TaskType = "Boss"     // 刷boss任务
-	BaoXiang TaskType = "BaoXiang" // 寻宝箱任务
-	ZhangJie TaskType = "ZhangJie" // 章节任务
-	JinRu    TaskType = "JinRu"    // 进入任务
+	Move             TaskType = "Move"     // 移动
+	XunGuai          TaskType = "XunGuai"  // 寻怪任务
+	JieSuan          TaskType = "JieSuan"  // 匹配结算
+	Boss             TaskType = "Boss"     // 刷boss任务
+	BaoXiang         TaskType = "BaoXiang" // 寻宝箱任务
+	ZhangJie         TaskType = "ZhangJie" // 章节任务
+	JinRu            TaskType = "JinRu"    // 进入任务
+	BackCallComplate TaskType = "BackCallComplate"
 	// ------------突破常量-------------------------
 
 	BreakerPlayer TaskType = "breaker_player_" // 寻找对手

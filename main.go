@@ -24,7 +24,10 @@ func main() {
 		fmt.Println("  k28     - K28任务")
 		fmt.Println("  breaker - 突破任务")
 		fmt.Println("默认任务类型为 k28")
-		fmt.Println("示例: ./free-hands-onmyoji -task breaker")
+		fmt.Println("display:")
+		fmt.Println("  -1      - 主显示器")
+		fmt.Println("  1       - 扩展显示器")
+		fmt.Println("示例: ./free-hands-onmyoji -task breaker -display 1")
 	}
 	taskType := flag.String("task", "breaker", "指定任务类型: k28 或 breaker")
 	displayID := flag.Int("display", -1, "指定显示器ID，默认为-1（主显示器）")

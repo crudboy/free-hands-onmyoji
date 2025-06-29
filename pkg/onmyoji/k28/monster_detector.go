@@ -4,7 +4,6 @@ import (
 	"free-hands-onmyoji/pkg/enums"
 	"free-hands-onmyoji/pkg/logger"
 	"free-hands-onmyoji/pkg/onmyoji"
-	"free-hands-onmyoji/pkg/onmyoji/entity"
 	"free-hands-onmyoji/pkg/onmyoji/window"
 	"free-hands-onmyoji/pkg/statemachine"
 	"free-hands-onmyoji/pkg/types"
@@ -14,12 +13,12 @@ import (
 
 // MonsterDetector 小怪检测任务
 type MonsterDetector struct {
-	ImgTemplate   entity.ImgInfo
+	ImgTemplate   onmyoji.ImgInfo
 	window.Window // 嵌入公共字段
 	conf          onmyoji.K28Config
 }
 
-func newMonsterDetectorTask(config onmyoji.Config, window window.Window, info entity.ImgInfo) *MonsterDetector {
+func newMonsterDetectorTask(config onmyoji.Config, window window.Window, info onmyoji.ImgInfo) *MonsterDetector {
 	return &MonsterDetector{
 		ImgTemplate: info,
 		Window:      window,

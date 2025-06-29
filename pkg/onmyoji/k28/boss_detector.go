@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"free-hands-onmyoji/pkg/enums"
 	"free-hands-onmyoji/pkg/logger"
-	"free-hands-onmyoji/pkg/onmyoji/entity"
+	"free-hands-onmyoji/pkg/onmyoji"
 	"free-hands-onmyoji/pkg/onmyoji/window"
 	"free-hands-onmyoji/pkg/statemachine"
 	"free-hands-onmyoji/pkg/types"
@@ -12,11 +12,11 @@ import (
 
 // BossDetector Boss检测任务
 type BossDetector struct {
-	ImgTemplate   entity.ImgInfo // 模板图片信息
-	window.Window                // 嵌入公共字段
+	ImgTemplate   onmyoji.ImgInfo // 模板图片信息
+	window.Window                 // 嵌入公共字段
 }
 
-func newBossDetectorTask(window window.Window, info entity.ImgInfo) *BossDetector {
+func newBossDetectorTask(window window.Window, info onmyoji.ImgInfo) *BossDetector {
 	return &BossDetector{
 		ImgTemplate: info,
 		Window:      window,

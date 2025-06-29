@@ -3,18 +3,18 @@ package breaker
 import (
 	"free-hands-onmyoji/pkg/enums"
 	"free-hands-onmyoji/pkg/logger"
-	"free-hands-onmyoji/pkg/onmyoji/entity"
+	"free-hands-onmyoji/pkg/onmyoji"
 	"free-hands-onmyoji/pkg/onmyoji/window"
 	"free-hands-onmyoji/pkg/statemachine"
 	"os"
 )
 
 type FailDetector struct {
-	ImgTemplate entity.ImgInfo // 模板图片信息
+	ImgTemplate onmyoji.ImgInfo // 模板图片信息
 	window.Window
 }
 
-func newBreakerFailDetector(window window.Window, info entity.ImgInfo) *FailDetector {
+func newBreakerFailDetector(window window.Window, info onmyoji.ImgInfo) *FailDetector {
 	return &FailDetector{
 		ImgTemplate: info,
 		Window:      window,

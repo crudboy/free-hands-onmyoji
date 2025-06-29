@@ -3,18 +3,18 @@ package breaker
 import (
 	"free-hands-onmyoji/pkg/enums"
 	"free-hands-onmyoji/pkg/logger"
-	"free-hands-onmyoji/pkg/onmyoji/entity"
+	"free-hands-onmyoji/pkg/onmyoji"
 	"free-hands-onmyoji/pkg/onmyoji/window"
 	"free-hands-onmyoji/pkg/statemachine"
 	"time"
 )
 
 type RewardDetector struct {
-	ImgTemplate []entity.ImgInfo // 模板图片信息
+	ImgTemplate []onmyoji.ImgInfo // 模板图片信息
 	window.Window
 }
 
-func newRewardDetector(window window.Window, info []entity.ImgInfo) *RewardDetector {
+func newRewardDetector(window window.Window, info []onmyoji.ImgInfo) *RewardDetector {
 	logger.Info("创建奖励检测器，模板数量: %d", len(info))
 	return &RewardDetector{
 		ImgTemplate: info,

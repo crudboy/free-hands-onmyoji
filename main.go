@@ -7,6 +7,7 @@ import (
 	"free-hands-onmyoji/pkg/logger"
 	"free-hands-onmyoji/pkg/onmyoji"
 	"free-hands-onmyoji/pkg/onmyoji/breaker"
+	"free-hands-onmyoji/pkg/onmyoji/general"
 	"free-hands-onmyoji/pkg/onmyoji/k28"
 	"free-hands-onmyoji/pkg/onmyoji/window"
 	"free-hands-onmyoji/pkg/statemachine"
@@ -21,17 +22,26 @@ func main() {
 	flag.Usage = func() {
 		fmt.Printf("用法: %s -task <任务类型>\n", os.Args[0])
 		fmt.Println("任务类型:")
-		fmt.Println("  k28     - K28任务")
-		fmt.Println("  breaker - 突破任务")
+		modes := onmyoji.GetModeNames()
+		for key, value := range modes {
+			fmt.Printf("  %s - %s 任务\n", key, value)
+		}
+
 		fmt.Println("默认任务类型为 k28")
 		fmt.Println("display:")
 		fmt.Println("  -1      - 主显示器")
 		fmt.Println("  1       - 扩展显示器")
 		fmt.Println("示例: ./free-hands-onmyoji -task breaker -display 1")
 	}
+
 	taskType := flag.String("task", "breaker", "指定任务类型: k28 或 breaker")
 	displayID := flag.Int("display", -1, "指定显示器ID，默认为-1（主显示器）")
 	flag.Parse()
+	value, err := onmyoji.ValidateModeExists(*taskType)
+	if err != nil {
+		fmt.Printf("无效的任务类型: %s\n", *taskType)
+		os.Exit(1)
+	}
 	window.DisplayID = *displayID
 	robotgo.DisplayID = *displayID // 设置robotgo的显示器ID
 	// 初始化日志系统
@@ -71,15 +81,16 @@ func main() {
 	taskName := *taskType
 	switch taskName {
 	case "k28":
-		logger.Info("注册K28任务...")
+
 		registrator.Registration(new(k28.Registrator))
 	case "breaker":
-		logger.Info("注册突破任务...")
 		registrator.Registration(new(breaker.Registrator))
 	default:
-		logger.Fatal("未知任务类型: %s", taskName)
-		os.Exit(1)
+		registrator.Registration(general.Registrator{
+			Path: "./" + taskName + "/",
+		})
 	}
+	logger.Info("注册任务: %s 成功！", value)
 	logger.Info("状态机开始运行...")
 	logger.Info("游戏窗口已激活，开始任务执行...")
 	logger.Info("当前任务: %s", sm.GetCurrentTask().Name())

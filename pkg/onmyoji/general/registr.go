@@ -1,4 +1,4 @@
-package k28
+package general
 
 import (
 	"fmt"
@@ -14,18 +14,13 @@ import (
 )
 
 type Registrator struct {
+	Path string
 }
 
 func (r Registrator) Registration(machine *statemachine.StateMachine, w window.Window, config onmyoji.Config, imgMap map[string]onmyoji.ImgInfo) error {
-
-	onmyoji.Registration(machine, newChapterDetectorTask(config, w, imgMap[string(enums.ZhangJie)]))
-	onmyoji.Registration(machine, newExploreDetectorTask(w, imgMap[string(enums.JinRu)]))
-	onmyoji.Registration(machine, newMonsterDetectorTask(config, w, imgMap[string(enums.XunGuai)]))
-	onmyoji.Registration(machine, newMoveTask(w))
-	onmyoji.Registration(machine, newLevelCompletionDetectorTask(config, w, imgMap[string(enums.JieSuan)]))
-	onmyoji.Registration(machine, newBossDetectorTask(w, imgMap[string(enums.Boss)]))
-	onmyoji.Registration(machine, newTreasureChestDetectorTask(config, w, imgMap[string(enums.BaoXiang)]))
-
+	onmyoji.Registration(machine, newChallengeDetector(w, imgMap[string(enums.Challenge)], config))
+	onmyoji.Registration(machine, newLevelCompletionDetector(w, imgMap[string(enums.LevelCompletion)], config))
+	onmyoji.Registration(machine, newLevelCompletionPart2Detector(w, imgMap[string(enums.LevelCompletionPart2)], config))
 	return nil
 }
 func (r Registrator) LoadImageTemplates() (map[string]onmyoji.ImgInfo, error) {
@@ -35,7 +30,7 @@ func (r Registrator) LoadImageTemplates() (map[string]onmyoji.ImgInfo, error) {
 	// 初始化模板图片map
 	imgMap := make(map[string]onmyoji.ImgInfo)
 
-	imgPath := "./k28/"
+	imgPath := r.Path
 	files, err := os.ReadDir(imgPath)
 	if err != nil {
 		panic(fmt.Errorf("读取图片目录失败: %v", err))
@@ -72,12 +67,9 @@ func (r Registrator) LoadImageTemplates() (map[string]onmyoji.ImgInfo, error) {
 
 	// 检查是否成功加载了所有必要的图片
 	requiredImages := []string{
-		string(enums.ZhangJie),
-		string(enums.JinRu),
-		string(enums.XunGuai),
-		string(enums.JieSuan),
-		string(enums.Boss),
-		string(enums.BaoXiang),
+		string(enums.Challenge),
+		string(enums.LevelCompletion),
+		string(enums.LevelCompletionPart2),
 	}
 
 	for _, imgName := range requiredImages {

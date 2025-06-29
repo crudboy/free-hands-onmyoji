@@ -3,18 +3,18 @@ package k28
 import (
 	"free-hands-onmyoji/pkg/enums"
 	"free-hands-onmyoji/pkg/logger"
-	"free-hands-onmyoji/pkg/onmyoji/entity"
+	"free-hands-onmyoji/pkg/onmyoji"
 	"free-hands-onmyoji/pkg/onmyoji/window"
 	"free-hands-onmyoji/pkg/statemachine"
 )
 
 // ExploreDetector 探索按钮检测任务
 type ExploreDetector struct {
-	ImgTemplate   entity.ImgInfo
+	ImgTemplate   onmyoji.ImgInfo
 	window.Window // 嵌入公共字段
 }
 
-func newExploreDetectorTask(window window.Window, info entity.ImgInfo) *ExploreDetector {
+func newExploreDetectorTask(window window.Window, info onmyoji.ImgInfo) *ExploreDetector {
 	return &ExploreDetector{
 		ImgTemplate: info,
 		Window:      window,

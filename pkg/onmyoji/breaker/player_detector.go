@@ -3,7 +3,7 @@ package breaker
 import (
 	"free-hands-onmyoji/pkg/enums"
 	"free-hands-onmyoji/pkg/logger"
-	"free-hands-onmyoji/pkg/onmyoji/entity"
+	"free-hands-onmyoji/pkg/onmyoji"
 	"free-hands-onmyoji/pkg/onmyoji/window"
 	"free-hands-onmyoji/pkg/statemachine"
 	"time"
@@ -11,11 +11,11 @@ import (
 
 // PlayerDetector
 type PlayerDetector struct {
-	ImgTemplates []entity.ImgInfo // 模板图片信息
+	ImgTemplates []onmyoji.ImgInfo // 模板图片信息
 	window.Window
 }
 
-func newPlayerDetector(window window.Window, templates []entity.ImgInfo) *PlayerDetector {
+func newPlayerDetector(window window.Window, templates []onmyoji.ImgInfo) *PlayerDetector {
 	logger.Info("创建玩家检测器，模板数量: %d", len(templates))
 	return &PlayerDetector{
 		ImgTemplates: templates,

@@ -5,7 +5,6 @@ import (
 	"free-hands-onmyoji/pkg/enums"
 	"free-hands-onmyoji/pkg/logger"
 	"free-hands-onmyoji/pkg/onmyoji"
-	"free-hands-onmyoji/pkg/onmyoji/entity"
 	"free-hands-onmyoji/pkg/onmyoji/window"
 	"free-hands-onmyoji/pkg/statemachine"
 	"free-hands-onmyoji/pkg/types"
@@ -18,13 +17,13 @@ import (
 */
 
 type LevelCompletionDetector struct {
-	ImgTemplate   entity.ImgInfo // 模板图像信息
-	window.Window                // 嵌入公共字段
-	runThreshold  int            // 运行次数阈值
+	ImgTemplate   onmyoji.ImgInfo // 模板图像信息
+	window.Window                 // 嵌入公共字段
+	runThreshold  int             // 运行次数阈值
 	conf          onmyoji.K28Config
 }
 
-func newLevelCompletionDetectorTask(config onmyoji.Config, window window.Window, info entity.ImgInfo) *LevelCompletionDetector {
+func newLevelCompletionDetectorTask(config onmyoji.Config, window window.Window, info onmyoji.ImgInfo) *LevelCompletionDetector {
 	return &LevelCompletionDetector{
 		ImgTemplate: info,
 		Window:      window,

@@ -5,7 +5,6 @@ import (
 	"free-hands-onmyoji/pkg/enums"
 	"free-hands-onmyoji/pkg/logger"
 	"free-hands-onmyoji/pkg/onmyoji"
-	"free-hands-onmyoji/pkg/onmyoji/entity"
 	"free-hands-onmyoji/pkg/onmyoji/window"
 	"free-hands-onmyoji/pkg/statemachine"
 	"time"
@@ -13,12 +12,12 @@ import (
 
 // TreasureChestDetector 宝箱检测任务
 type TreasureChestDetector struct {
-	ImgTemplate   entity.ImgInfo // 模板图片信息
-	window.Window                // 嵌入公共字段
+	ImgTemplate   onmyoji.ImgInfo // 模板图片信息
+	window.Window                 // 嵌入公共字段
 	conf          onmyoji.K28Config
 }
 
-func newTreasureChestDetectorTask(conf onmyoji.Config, window window.Window, info entity.ImgInfo) *TreasureChestDetector {
+func newTreasureChestDetectorTask(conf onmyoji.Config, window window.Window, info onmyoji.ImgInfo) *TreasureChestDetector {
 	return &TreasureChestDetector{
 		ImgTemplate: info,
 		Window:      window,

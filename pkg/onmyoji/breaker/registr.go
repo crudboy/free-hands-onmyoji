@@ -5,7 +5,6 @@ import (
 	"free-hands-onmyoji/pkg/enums"
 	"free-hands-onmyoji/pkg/logger"
 	"free-hands-onmyoji/pkg/onmyoji"
-	"free-hands-onmyoji/pkg/onmyoji/entity"
 	"free-hands-onmyoji/pkg/onmyoji/window"
 	"free-hands-onmyoji/pkg/statemachine"
 	"free-hands-onmyoji/pkg/utils"
@@ -18,7 +17,7 @@ import (
 type Registrator struct {
 }
 
-func (r Registrator) Registration(machine *statemachine.StateMachine, w window.Window, config onmyoji.Config, imgMap map[string]entity.ImgInfo) error {
+func (r Registrator) Registration(machine *statemachine.StateMachine, w window.Window, config onmyoji.Config, imgMap map[string]onmyoji.ImgInfo) error {
 
 	imgList, rewardList := convertImgList(imgMap)
 	onmyoji.Registration(machine, newPlayerDetector(w, imgList))
@@ -30,26 +29,26 @@ func (r Registrator) Registration(machine *statemachine.StateMachine, w window.W
 	return nil
 }
 
-func convertImgList(imgMap map[string]entity.ImgInfo) ([]entity.ImgInfo, []entity.ImgInfo) {
-	imgList := make([]entity.ImgInfo, 0, len(imgMap))
-	rewardList := make([]entity.ImgInfo, 0, len(imgMap))
-	for imgName, imgInfo := range imgMap {
+func convertImgList(imgMap map[string]onmyoji.ImgInfo) ([]onmyoji.ImgInfo, []onmyoji.ImgInfo) {
+	imgList := make([]onmyoji.ImgInfo, 0, len(imgMap))
+	rewardList := make([]onmyoji.ImgInfo, 0, len(imgMap))
+	for imgName, ImgInfo := range imgMap {
 		if strings.HasPrefix(imgName, "breaker_player_") {
-			imgList = append(imgList, imgInfo)
+			imgList = append(imgList, ImgInfo)
 		}
 		if strings.HasPrefix(imgName, "breaker_reward_") {
-			rewardList = append(rewardList, imgInfo)
+			rewardList = append(rewardList, ImgInfo)
 		}
 		// 注册每个图片
 	}
 	return imgList, rewardList
 }
-func (r Registrator) LoadImageTemplates() (map[string]entity.ImgInfo, error) {
+func (r Registrator) LoadImageTemplates() (map[string]onmyoji.ImgInfo, error) {
 
 	logger.Info("加载突破任务模板图片")
 
 	// 初始化模板图片map
-	imgMap := make(map[string]entity.ImgInfo)
+	imgMap := make(map[string]onmyoji.ImgInfo)
 
 	imgPath := "./breaker/"
 	files, err := os.ReadDir(imgPath)
@@ -77,7 +76,7 @@ func (r Registrator) LoadImageTemplates() (map[string]entity.ImgInfo, error) {
 			// 不要文件后缀
 			fileName := imgFile.Name()[:len(imgFile.Name())-len(filepath.Ext(imgFile.Name()))]
 
-			imgMap[fileName] = entity.ImgInfo{
+			imgMap[fileName] = onmyoji.ImgInfo{
 				Path:    imgPath + imgFile.Name(),
 				ImgMaxX: im.Width,
 				ImgMaxY: im.Height,

@@ -3,18 +3,18 @@ package breaker
 import (
 	"free-hands-onmyoji/pkg/enums"
 	"free-hands-onmyoji/pkg/logger"
-	"free-hands-onmyoji/pkg/onmyoji/entity"
+	"free-hands-onmyoji/pkg/onmyoji"
 	"free-hands-onmyoji/pkg/onmyoji/window"
 	"free-hands-onmyoji/pkg/statemachine"
 )
 
 // BreakerWinDetector 突破胜利检测器
 type BreakerWinDetector struct {
-	ImgTemplates entity.ImgInfo // 模板图片信息
+	ImgTemplates onmyoji.ImgInfo // 模板图片信息
 	window.Window
 }
 
-func newBreakerWinDetector(window window.Window, template entity.ImgInfo) *BreakerWinDetector {
+func newBreakerWinDetector(window window.Window, template onmyoji.ImgInfo) *BreakerWinDetector {
 	return &BreakerWinDetector{
 		ImgTemplates: template,
 		Window:       window,

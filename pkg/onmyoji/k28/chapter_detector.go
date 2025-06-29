@@ -5,19 +5,18 @@ import (
 	"free-hands-onmyoji/pkg/enums"
 	"free-hands-onmyoji/pkg/logger"
 	"free-hands-onmyoji/pkg/onmyoji"
-	"free-hands-onmyoji/pkg/onmyoji/entity"
 	"free-hands-onmyoji/pkg/onmyoji/window"
 	"free-hands-onmyoji/pkg/statemachine"
 )
 
 // ChapterDetector 章节检测任务
 type ChapterDetector struct {
-	ImgTemplate entity.ImgInfo // 模板图片信息
+	ImgTemplate onmyoji.ImgInfo // 模板图片信息
 	window.Window
 	conf onmyoji.K28Config
 }
 
-func newChapterDetectorTask(config onmyoji.Config, window window.Window, info entity.ImgInfo) *ChapterDetector {
+func newChapterDetectorTask(config onmyoji.Config, window window.Window, info onmyoji.ImgInfo) *ChapterDetector {
 	return &ChapterDetector{
 		ImgTemplate: info,
 		Window:      window,

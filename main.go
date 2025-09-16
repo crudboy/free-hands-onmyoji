@@ -106,7 +106,7 @@ runLoop:
 			break runLoop
 		default:
 			sm.Run()
-			time.Sleep(1500 * time.Millisecond) // 每秒执行一次，方便观察
+			time.Sleep(100 * time.Millisecond) // 每秒执行一次，方便观察
 		}
 	}
 

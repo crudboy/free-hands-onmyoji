@@ -25,21 +25,30 @@ func (t *RewardDetector) Name() enums.TaskType {
 	return enums.BreakerReward
 }
 func (t *RewardDetector) Execute(controller statemachine.TaskController) error {
+	success := make(chan struct{})
+
 	for i := 0; i < len(t.ImgTemplate); i++ {
-		logger.Info("检测奖励模板: %d", t.ImgTemplate[i].Path)
-		clicked, err := t.ClickAtTemplatePositionWithOffset(t.ImgTemplate[i].Image, 0.8, 0, 100)
-		time.Sleep(500 * time.Millisecond) // 等待奖励页面消失
-		if err != nil {
-			logger.Error("点击奖励模板失败: %v", err)
-			return err
-		}
-		if clicked {
-			logger.Info("奖励点击成功")
-			// 成功点击后，切换到玩家检测状态
-			return nil // 成功点击后返回
-		}
+		go func(idx int) {
+			logger.Info("检测奖励模板: %d", t.ImgTemplate[idx].Path)
+			clicked, err := t.ClickAtTemplatePositionWithOffset(t.ImgTemplate[idx].Image, 0.8, 0, 100)
+			if err == nil && clicked {
+				select {
+				case success <- struct{}{}:
+				default:
+				}
+			}
+		}(i)
 	}
-	logger.Info("奖励检测失败，未找到匹配的奖励模板开始检测玩家")
-	controller.Next(enums.BreakerPlayer) // 切换到玩家检测状态
-	return nil
+
+	select {
+	case <-success:
+		logger.Info("奖励点击成功")
+		time.Sleep(2000 * time.Millisecond)
+		controller.Next(enums.BreakerPlayer)
+		return nil
+	case <-time.After(2000 * time.Millisecond):
+		logger.Info("奖励检测失败，未找到匹配的奖励模板开始检测玩家")
+		controller.Next(enums.BreakerPlayer)
+		return nil
+	}
 }

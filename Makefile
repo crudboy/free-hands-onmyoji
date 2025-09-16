@@ -10,12 +10,15 @@ build:
 	CGO_CPPFLAGS="$(CGO_CPPFLAGS)" CGO_LDFLAGS="$(CGO_LDFLAGS)" go build -o $(APP_NAME) .
 
 run: build
-	./$(APP_NAME)
+	./$(APP_NAME) -task k28
 
 clean:
 	rm -f $(APP_NAME)
 test:
 	CGO_CPPFLAGS="$(CGO_CPPFLAGS)" CGO_LDFLAGS="$(CGO_LDFLAGS)" go test -v ./...
+package:
+	CGO_CPPFLAGS="$(CGO_CPPFLAGS)" CGO_LDFLAGS="$(CGO_LDFLAGS)" go build -o $(APP_NAME) .
+	zip -r $(APP_NAME).zip  $(APP_NAME) README.md  config.toml k28 breaker guren -x *.DS_Store
 deps:
 	go mod tidy
 	go mod download

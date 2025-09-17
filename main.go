@@ -31,11 +31,20 @@ func main() {
 		fmt.Println("display:")
 		fmt.Println("  -1      - 主显示器")
 		fmt.Println("  1       - 扩展显示器")
-		fmt.Println("示例: ./free-hands-onmyoji -task breaker -display 1")
+		fmt.Println("timeout:")
+		fmt.Println("  0       - 不限制运行时间（默认）")
+		fmt.Println("  >0      - 运行指定分钟数后自动退出")
+		fmt.Println("closeBlueStacks:")
+		fmt.Println("  false   - 定时退出时不关闭BlueStacks（默认）")
+		fmt.Println("  true    - 定时退出时自动关闭BlueStacks")
+		fmt.Println("注意：手动退出（Command+Shift+O）始终不会关闭BlueStacks")
+		fmt.Println("示例: ./free-hands-onmyoji -task breaker -display 1 -timeout 60 -closeBlueStacks")
 	}
 
 	taskType := flag.String("task", "breaker", "指定任务类型: k28 或 breaker")
 	displayID := flag.Int("display", -1, "指定显示器ID，默认为-1（主显示器）")
+	timeout := flag.Int("timeout", 0, "程序运行时间限制（分钟），0表示不限制")
+	closeBlueStacks := flag.Bool("closeBlueStacks", false, "程序退出时是否自动关闭BlueStacks")
 	flag.Parse()
 	value, err := onmyoji.ValidateModeExists(*taskType)
 	if err != nil {
@@ -52,10 +61,13 @@ func main() {
 		panic(error)
 	}
 	// 创建一个通道用于控制程序退出
-	exitChan := make(chan bool)
+	exitChan := make(chan events.ExitSignal)
 
 	// 在后台监听键盘事件
 	go events.ListenForExitKey(exitChan)
+
+	// 启动定时退出功能（如果设置了超时时间）
+	events.StartTimeoutExit(*timeout, exitChan)
 	// 获取游戏窗口的位置和大小
 	logger.Info("正在获取游戏窗口位置和大小...")
 	activeError := window.ActiveWindow("BlueStacks", 0)
@@ -95,14 +107,23 @@ func main() {
 	logger.Info("游戏窗口已激活，开始任务执行...")
 	logger.Info("当前任务: %s", sm.GetCurrentTask().Name())
 	logger.Info("----------------------------------------")
-	logger.Info("按下 Command+Shift+O 组合键可以停止程序运行")
+	logger.Info("按下 Command+Shift+O 组合键可以停止程序运行（不会关闭BlueStacks）")
+	if *timeout > 0 {
+		logger.Info("程序已设置 %d 分钟后自动退出", *timeout)
+		if *closeBlueStacks {
+			logger.Info("定时退出时将自动关闭BlueStacks模拟器")
+		} else {
+			logger.Info("定时退出时不会关闭BlueStacks模拟器")
+		}
+	}
 	time.Sleep(2 * time.Second) // 等待2秒，确保状态机初始化完成
 
 runLoop:
 	for {
 		select {
-		case <-exitChan:
-			logger.Info("正在退出程序...")
+		case exitSignal := <-exitChan:
+			// 调用退出函数，根据退出类型和配置决定是否关闭BlueStacks
+			events.ExitWithBlueStacksClose(exitSignal, *closeBlueStacks)
 			break runLoop
 		default:
 			sm.Run()

@@ -25,8 +25,6 @@ func (r Registrator) Registration(machine *statemachine.StateMachine, w window.W
 }
 func (r Registrator) LoadImageTemplates() (map[string]onmyoji.ImgInfo, error) {
 
-	logger.Info("加载困28任务模板图片")
-
 	// 初始化模板图片map
 	imgMap := make(map[string]onmyoji.ImgInfo)
 

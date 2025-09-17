@@ -64,7 +64,7 @@ func (tc *Window) calculateTemplatePosition(templateImage image.Image, similarit
 		return 0, 0, 0, false, err
 	}
 	// 计算出模板图像在窗口区域内的坐标
-	tempPosX, tempPosY, num := utils.FindTempPosByDEBUG("/Users/crudboy/Debug.jpg", templateImage, img)
+	tempPosX, tempPosY, num := utils.FindTempPos(templateImage, img)
 
 	if num <= 0 {
 		logger.Warn("未找到模板图像，无法执行任务")

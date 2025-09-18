@@ -116,8 +116,11 @@ func main() {
 			logger.Info("定时退出时不会关闭BlueStacks模拟器")
 		}
 	}
-	time.Sleep(2 * time.Second) // 等待2秒，确保状态机初始化完成
-
+	time.Sleep(2 * time.Second)       // 等待2秒，确保状态机初始化完成
+	var sleepTime time.Duration = 100 // 默认每次循环间隔100毫秒
+	if *taskType == "k28" {
+		sleepTime = 1500 // k28任务每次循环间隔50毫秒
+	}
 runLoop:
 	for {
 		select {
@@ -127,7 +130,7 @@ runLoop:
 			break runLoop
 		default:
 			sm.Run()
-			time.Sleep(100 * time.Millisecond) // 每秒执行一次，方便观察
+			time.Sleep(sleepTime * time.Millisecond) // 每次循环间隔100毫秒
 		}
 	}
 

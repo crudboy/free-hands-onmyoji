@@ -11,6 +11,7 @@ var modes = map[string]string{
 	"breaker":       "突破",
 	"mitama":        "御灵",
 	"limitedEvents": "限定活动",
+	"capture":       "截图",
 }
 
 type ImgInfo struct {

@@ -43,7 +43,7 @@ func TestActiveWindow(t *testing.T) {
 }
 func TestCaptureScreen(t *testing.T) {
 	logger.Init()
-	entity, err := GetWindowPositionOnSecondDisplay("BlueStacks", 1)
+	entity, err := GetPlatform().GetWindowPositionOnSecondDisplay(1)
 	if err != nil {
 		t.Fatalf("获取窗口位置失败: %v", err)
 	}

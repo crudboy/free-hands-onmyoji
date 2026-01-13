@@ -11,6 +11,8 @@ import (
 // ExitType 退出类型
 type ExitType int
 
+var platform = window.GetPlatform()
+
 const (
 	// ManualExit 手动退出（不关闭BlueStacks）
 	ManualExit ExitType = iota
@@ -96,16 +98,16 @@ func StartTimeoutExit(timeout int, exitChan chan ExitSignal) {
 func ExitWithBlueStacksClose(exitSignal ExitSignal, closeBlueStacks bool) {
 	switch exitSignal.Type {
 	case ManualExit:
-		logger.Info("手动退出程序，保持BlueStacks运行...")
+		logger.Info("手动退出程序，保持%s运行...", platform.GetAppName())
 	case TimeoutExit:
 		if closeBlueStacks {
-			logger.Info("定时退出程序并关闭BlueStacks...")
-			err := window.CloseBlueStacks()
+			logger.Info("定时退出程序并关闭%s...", platform.GetAppName())
+			err := platform.CloseApplication()
 			if err != nil {
-				logger.Error("关闭BlueStacks时出现错误: %v", err)
+				logger.Error("关闭%s时出现错误: %v", platform.GetAppName(), err)
 			}
 		} else {
-			logger.Info("定时退出程序，保持BlueStacks运行...")
+			logger.Info("定时退出程序，保持%s运行...", platform.GetAppName())
 		}
 	default:
 		logger.Info("正在退出程序...")

@@ -22,6 +22,8 @@ const (
 	Challenge            TaskType = "challenge"              // 挑战按钮检测
 	LevelCompletion      TaskType = "level_completion"       // 结算检测器
 	LevelCompletionPart2 TaskType = "level_completion_part2" // 结算检测器第二部分
+	//-------------capture常量-------------------------
+	CaptureDisplay TaskType = "capture_display" // 截图
 
 )
 

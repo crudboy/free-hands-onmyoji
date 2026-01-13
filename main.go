@@ -7,6 +7,7 @@ import (
 	"free-hands-onmyoji/internal/logger"
 	"free-hands-onmyoji/internal/onmyoji"
 	"free-hands-onmyoji/internal/onmyoji/breaker"
+	"free-hands-onmyoji/internal/onmyoji/capture"
 	"free-hands-onmyoji/internal/onmyoji/general"
 	"free-hands-onmyoji/internal/onmyoji/k28"
 	"free-hands-onmyoji/internal/onmyoji/window"
@@ -70,7 +71,7 @@ func main() {
 	events.StartTimeoutExit(*timeout, exitChan)
 	// 获取游戏窗口的位置和大小
 	logger.Info("正在获取游戏窗口位置和大小...")
-	activeError := window.ActiveWindow("BlueStacks", 0)
+	activeError := window.GetPlatform().ActiveWindow(0)
 	if activeError != nil {
 		logger.Fatal("无法激活游戏窗口: %v", activeError)
 		os.Exit(1)
@@ -97,6 +98,8 @@ func main() {
 		registrator.Registration(new(k28.Registrator))
 	case "breaker":
 		registrator.Registration(new(breaker.Registrator))
+	case "capture":
+		registrator.Registration(new(capture.Registrator))
 	default:
 		registrator.Registration(general.Registrator{
 			Path: "./" + taskName + "/",

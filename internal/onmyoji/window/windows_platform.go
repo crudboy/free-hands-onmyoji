@@ -1,9 +1,13 @@
+//go:build windows
+// +build windows
+
 package window
 
 import (
 	"fmt"
 
 	"github.com/go-vgo/robotgo"
+	"github.com/lxn/win"
 )
 
 // GetWindowPosition Windows 实现：获取特定应用窗口的位置和大小信息
@@ -51,11 +55,6 @@ func (w *WindowsPlatform) GetWindowPositionOnSecondDisplay(displayId int) (Windo
 	return Window{}, fmt.Errorf("Windows 平台暂未实现多显示器窗口位置检测")
 }
 
-// SetScaleWindow Windows 实现：设置窗口大小
-func (w *WindowsPlatform) SetScaleWindow(width, height int) {
-	// TODO: Windows 平台实现
-	// 可以使用 win32 API 来设置窗口大小
-}
 func (w *WindowsPlatform) CloseApplication() error {
 	fpid, err := robotgo.FindIds(w.appName)
 	if err != nil {
@@ -67,4 +66,19 @@ func (w *WindowsPlatform) CloseApplication() error {
 	}
 	robotgo.Kill(fpid[0])
 	return nil
+}
+
+// SetScaleWindow Windows 实现：设置窗口大小
+func (w *WindowsPlatform) SetScaleWindow(width, height int) {
+	fpid, err := robotgo.FindIds(w.appName)
+	if err != nil {
+		fmt.Printf("查找应用 '%s' 失败: %v\n", w.appName, err)
+		return
+	}
+
+	if len(fpid) == 0 {
+		fmt.Printf("未找到运行中的应用: %s\n", w.appName)
+		return
+	}
+	win.MoveWindow(win.HWND(fpid[0]), 100, 100, 800, 600, true)
 }

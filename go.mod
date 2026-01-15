@@ -8,6 +8,7 @@ require (
 	github.com/BurntSushi/toml v1.5.0
 	github.com/andybrewer/mack v0.0.0-20220307193339-22e922cc18af
 	github.com/go-vgo/robotgo v1.0.0
+	github.com/lxn/win v0.0.0-20210218163916-a377121e959e
 	github.com/robotn/gohook v0.42.2
 	github.com/vcaesar/gcv v0.44.0
 	github.com/vcaesar/screenshot v0.11.1
@@ -24,7 +25,6 @@ require (
 	github.com/godbus/dbus/v5 v5.2.2 // indirect
 	github.com/jezek/xgb v1.2.0 // indirect
 	github.com/lufia/plan9stats v0.0.0-20251013123823-9fd1530e3ec3 // indirect
-	github.com/otiai10/gosseract v2.2.1+incompatible // indirect
 	github.com/otiai10/gosseract/v2 v2.4.1 // indirect
 	github.com/power-devops/perfstat v0.0.0-20240221224432-82ca36839d55 // indirect
 	github.com/robotn/xgb v0.10.0 // indirect

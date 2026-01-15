@@ -1,5 +1,10 @@
+//go:build darwin
+
 package window
 
+/**
+影子文件：用于在 Darwin 平台下编译通过，但不执行任何实际操作。
+）*/
 // GetWindowPosition Windows 实现：获取特定应用窗口的位置和大小信息
 func (w *WindowsPlatform) GetWindowPosition() (Window, error) {
 	return Window{}, nil

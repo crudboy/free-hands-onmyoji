@@ -100,7 +100,7 @@ func InitPlatform(os string) {
 	case "windows":
 		platformImpl = &WindowsPlatform{
 			BasePlatform: BasePlatform{
-				appName: "BlueStacks",
+				appName: "onmyoji",
 			},
 		}
 	default:

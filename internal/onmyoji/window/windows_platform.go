@@ -30,23 +30,29 @@ func (w *WindowsPlatform) getWindowPositionByMaster() (Window, error) {
 	if len(fpid) == 0 {
 		return Window{}, fmt.Errorf("未找到运行中的应用: %s", w.appName)
 	}
-	x, y, width, height := robotgo.GetBounds(fpid[0])
-	// 3. 验证返回值的有效性（未找到窗口时可能返回 0 或错误坐标）
-	if width == 0 && height == 0 {
-		return Window{}, fmt.Errorf("应用 '%s' 正在运行，但无法获取其窗口位置", w.appName)
+
+	// 遍历所有进程ID，找到宽高都不为零的窗口
+	for _, pid := range fpid {
+		x, y, width, height := robotgo.GetBounds(pid)
+		// 验证返回值的有效性（宽高都不为零的是有效窗口）
+		if width != 0 && height != 0 {
+			return Window{
+				pid:     pid,
+				WindowX: x,
+				WindowY: y,
+				WindowW: width,
+				WindowH: height,
+				CaptureArea: CaptureArea{
+					X: x,
+					Y: y,
+					W: width,
+					H: height,
+				},
+			}, nil
+		}
 	}
-	return Window{
-		WindowX: x,
-		WindowY: y,
-		WindowW: width,
-		WindowH: height,
-		CaptureArea: CaptureArea{
-			X: x,
-			Y: y,
-			W: width,
-			H: height,
-		},
-	}, nil
+
+	return Window{}, fmt.Errorf("应用 '%s' 正在运行，但无法获取其有效窗口位置", w.appName)
 }
 
 // GetWindowPositionOnSecondDisplay Windows 实现：获取第二显示器上的窗口位置

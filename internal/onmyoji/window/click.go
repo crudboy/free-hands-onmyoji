@@ -13,6 +13,7 @@ import (
 
 // Window 定义任务的公共字段
 type Window struct {
+	pid         int         // 进程ID handler
 	WindowX     int         // 程序窗口在屏幕上的起始位置X（偏移量）
 	WindowY     int         // 程序窗口在屏幕上的起始位置Y（偏移量）
 	WindowH     int         // 截图区域的高度

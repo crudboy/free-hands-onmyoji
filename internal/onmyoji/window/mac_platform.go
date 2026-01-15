@@ -44,8 +44,15 @@ end tell
 	}
 
 	logger.Info("获取窗口位置和大小: 位置(%d,%d), 大小(%d,%d)", x, y, w, h)
-
+	pids, err := robotgo.FindIds(m.appName)
+	if err != nil {
+		return Window{}, fmt.Errorf("查找应用 '%s' 失败: %v", m.appName, err)
+	}
+	if len(pids) == 0 {
+		return Window{}, fmt.Errorf("未找到运行中的应用: %s", m.appName)
+	}
 	return Window{
+		pid:     pids[0],
 		WindowX: x,
 		WindowY: y,
 		WindowW: w,

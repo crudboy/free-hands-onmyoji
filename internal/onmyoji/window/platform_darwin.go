@@ -1,6 +1,3 @@
-//go:build darwin
-// +build darwin
-
 package window
 
 // GetWindowPosition Windows 实现：获取特定应用窗口的位置和大小信息

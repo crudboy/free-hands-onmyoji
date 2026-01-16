@@ -1,7 +1,7 @@
 //go:build windows
 // +build windows
 
-package window
+package utils
 
 import (
 	"fmt"

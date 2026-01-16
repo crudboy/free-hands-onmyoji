@@ -5,6 +5,7 @@ package window
 
 import (
 	"fmt"
+	"free-hands-onmyoji/internal/utils"
 
 	"github.com/go-vgo/robotgo"
 	"github.com/lxn/win"
@@ -22,37 +23,28 @@ func (w *WindowsPlatform) GetWindowPosition() (Window, error) {
 
 // getWindowPositionByMaster Windows 实现：获取主屏幕窗口位置
 func (w *WindowsPlatform) getWindowPositionByMaster() (Window, error) {
-	fpid, err := robotgo.FindIds(w.appName)
+	utils.EnableProcessDPIAware()
+	hwnd, err := utils.FindHwndByTitle(w.appName)
 	if err != nil {
-		return Window{}, fmt.Errorf("查找应用 '%s' 失败: %v", w.appName, err)
+		return Window{}, fmt.Errorf("根据标题查找窗口失败: %v", err)
 	}
-
-	if len(fpid) == 0 {
-		return Window{}, fmt.Errorf("未找到运行中的应用: %s", w.appName)
+	x, y, width, height, err := utils.GetWindowBounds(hwnd)
+	if err != nil {
+		return Window{}, fmt.Errorf("获取窗口位置失败: %v", err)
 	}
-
-	// 遍历所有进程ID，找到宽高都不为零的窗口
-	for _, pid := range fpid {
-		x, y, width, height := robotgo.GetBounds(pid)
-		// 验证返回值的有效性（宽高都不为零的是有效窗口）
-		if width != 0 && height != 0 {
-			return Window{
-				pid:     pid,
-				WindowX: x,
-				WindowY: y,
-				WindowW: width,
-				WindowH: height,
-				CaptureArea: CaptureArea{
-					X: x,
-					Y: y,
-					W: width,
-					H: height,
-				},
-			}, nil
-		}
-	}
-
-	return Window{}, fmt.Errorf("应用 '%s' 正在运行，但无法获取其有效窗口位置", w.appName)
+	return Window{
+		pid:     0,
+		WindowX: x,
+		WindowY: y,
+		WindowW: width,
+		WindowH: height,
+		CaptureArea: CaptureArea{
+			X: x,
+			Y: y,
+			W: width,
+			H: height,
+		},
+	}, nil
 }
 
 // GetWindowPositionOnSecondDisplay Windows 实现：获取第二显示器上的窗口位置

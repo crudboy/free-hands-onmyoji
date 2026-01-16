@@ -1,7 +1,11 @@
+//go:build windows
+// +build windows
+
 package window
 
 import (
 	"free-hands-onmyoji/internal/logger"
+	"free-hands-onmyoji/internal/utils"
 	"image/png"
 	"os"
 	"path/filepath"
@@ -13,20 +17,21 @@ import (
 
 func TestWindow(t *testing.T) {
 	logger.Init()
-	err := EnableProcessDPIAware()
+	err := utils.EnableProcessDPIAware()
 	if err != nil {
 		t.Fatalf("EnableProcessDPIAware failed: %v", err)
 	}
-	hwnd, err := FindHwndByTitle("阴阳师-MuMu模拟器专版")
+	hwnd, err := utils.FindHwndByTitle("阴阳师-MuMu模拟器专版")
 	if err != nil {
 		t.Fatalf("FindHwndByTitle failed: %v", err)
 	}
-	err = ActivateWindow(hwnd)
+	err = utils.ActivateWindow(hwnd)
+	time.Sleep(2 * time.Second) // 等待窗口激活
 	if err != nil {
 		t.Fatalf("ActivateWindow failed: %v", err)
 	}
 	t.Logf("Found window handle: %v", hwnd)
-	x, y, w, h, err := GetWindowBounds(hwnd)
+	x, y, w, h, err := utils.GetWindowBounds(hwnd)
 	if err != nil {
 		t.Fatalf("GetWindowBounds failed: %v", err)
 	}

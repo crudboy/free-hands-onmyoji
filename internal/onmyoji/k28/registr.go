@@ -22,6 +22,7 @@ func (r Registrator) Registration(machine *statemachine.StateMachine, w window.W
 	onmyoji.Registration(machine, newExploreDetectorTask(w, imgMap[string(tasks.JinRu)]))
 	onmyoji.Registration(machine, newMonsterDetectorTask(config, w, imgMap[string(tasks.XunGuai)]))
 	onmyoji.Registration(machine, newMoveTask(w))
+	onmyoji.Registration(machine, newCompletionDetectorTask(w, imgMap[string(tasks.Win)]))
 	onmyoji.Registration(machine, newLevelCompletionDetectorTask(config, w, imgMap[string(tasks.JieSuan)]))
 	onmyoji.Registration(machine, newBossDetectorTask(w, imgMap[string(tasks.Boss)]))
 	onmyoji.Registration(machine, newTreasureChestDetectorTask(config, w, imgMap[string(tasks.BaoXiang)]))

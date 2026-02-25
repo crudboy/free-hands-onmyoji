@@ -28,7 +28,7 @@ func (t *Move) Execute(controller statemachine.TaskController) error {
 	attribute, _ := controller.GetAttribute(tasks.MoveCount)
 	// 等待移动完成
 
-	_, _ = t.ClickFloor(165, 12)
+	_, _ = t.ClickFloor(120, -60)
 	// 如果设置了最大移动次数并且已达到，则切换到下一个任务
 	if attribute.(int) > 0 && t.Count >= attribute.(int) {
 		t.Count = 0 // 重置执行次数

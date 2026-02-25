@@ -27,7 +27,7 @@ func (t *LevelCompletionPart2Detector) Name() tasks.TaskType {
 func (t *LevelCompletionPart2Detector) Execute(controller statemachine.TaskController) error {
 	// 使用公共方法计算模板位置并添加随机偏移点击
 	logger.Info("开始执行关卡完成检测任务，使用模板: %s", t.ImgTemplate.Path)
-	clicked, err := t.ClickAtTemplatePositionWithRandomOffset(t.ImgTemplate.Image, 0.8)
+	clicked, err := t.ClickAtTemplatePositionWithRandomOffset(t.ImgTemplate.Image, 0.8, 450)
 	if err != nil {
 		return err
 	}

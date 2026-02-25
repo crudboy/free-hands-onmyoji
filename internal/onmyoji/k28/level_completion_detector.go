@@ -35,8 +35,9 @@ func (t *LevelCompletionDetector) Name() tasks.TaskType {
 func (t *LevelCompletionDetector) Execute(controller statemachine.TaskController) error {
 	t.runThreshold++
 	time.Sleep(time.Duration(t.conf.LevelCompletionWaitTime) * time.Millisecond) // 等待600毫秒，确保界面稳定
+
 	// 使用公共方法计算模板位置并添加随机偏移点击
-	clicked, err := t.ClickAtTemplatePositionWithRandomOffset(t.ImgTemplate.Image, 0.8)
+	clicked, err := t.ClickAtTemplatePositionWithRandomOffset(t.ImgTemplate.Image, 0.8, 300)
 	if err != nil {
 		return fmt.Errorf("模板图像匹配错误: %v", err)
 	}

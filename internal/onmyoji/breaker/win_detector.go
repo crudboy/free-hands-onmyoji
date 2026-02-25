@@ -25,7 +25,8 @@ func (t *BreakerWinDetector) Name() tasks.TaskType {
 	return tasks.BreakerWin
 }
 func (t *BreakerWinDetector) Execute(controller statemachine.TaskController) error {
-	clicked, err := t.ClickAtTemplatePositionWithRandomOffset(t.ImgTemplates.Image, 0.8)
+	time.Sleep(400 * time.Millisecond) // 等待1.5秒，确保界面稳定
+	clicked, err := t.ClickAtTemplatePositionWithRandomOffset(t.ImgTemplates.Image, 0.8, 550)
 	if err != nil {
 		return err
 	}

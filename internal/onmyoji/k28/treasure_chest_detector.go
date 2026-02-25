@@ -31,7 +31,7 @@ func (t *TreasureChestDetector) Name() tasks.TaskType {
 
 func (t *TreasureChestDetector) Execute(controller statemachine.TaskController) error {
 	// 使用公共方法计算模板位置并添加随机偏移点击
-	clicked, err := t.ClickAtTemplatePositionWithRandomOffset(t.ImgTemplate.Image, 0.8)
+	clicked, err := t.ClickAtTemplatePositionWithRandomOffset(t.ImgTemplate.Image, 0.8, 300)
 	if err != nil {
 		return fmt.Errorf("模板图像匹配错误: %v", err)
 	}
@@ -41,7 +41,7 @@ func (t *TreasureChestDetector) Execute(controller statemachine.TaskController) 
 		time.Sleep(200 * time.Millisecond) // 等待点击操作完成
 		// 点击地板
 		logger.Info("宝箱点击后，点击地板")
-		t.ClickFloor(0, 50)
+		t.ClickFloor(0, 30)
 		time.Sleep(200 * time.Millisecond) // 等待地板点击完成
 	} else {
 		//宝箱寻找完成

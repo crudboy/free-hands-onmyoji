@@ -33,7 +33,7 @@ func (t *MonsterDetector) Execute(controller statemachine.TaskController) error 
 	t.Count++ // 增加执行次数
 	// 使用公共方法计算模板位置并添加随机偏移点击
 	// 使用公共方法点击
-	clicked, err := t.ClickAtTemplatePositionWithRandomOffset(t.ImgTemplate.Image, 0.8)
+	clicked, err := t.ClickAtTemplatePositionWithRandomOffset(t.ImgTemplate.Image, 0.8, 300)
 	if err != nil {
 		return err
 	}
@@ -42,15 +42,20 @@ func (t *MonsterDetector) Execute(controller statemachine.TaskController) error 
 		t.Count = 0
 		//点击成功 但是有可能会跑掉所以需要再次尝试匹配一次
 		logger.Info("小怪匹配成功 防止小怪跑掉，尝试再次匹配小怪")
-		time.Sleep(500 * time.Millisecond) // 等待200毫秒，确保界面稳定
 		// 使用公共方法点击
-		_, err := t.ClickAtTemplatePositionWithRandomOffset(t.ImgTemplate.Image, 0.8)
-		if err != nil {
-			return err
+		for i := 0; i < 5; i++ {
+			time.Sleep(400 * time.Millisecond) // 等待400毫秒，确保界面稳定
+			doubleClick, err := t.ClickAtTemplatePositionWithRandomOffset(t.ImgTemplate.Image, 0.8, 300)
+			if err != nil {
+				return err
+			}
+			if doubleClick {
+				logger.Info("小怪再次匹配成功，继续点击")
+			}
 		}
 
 		logger.Info("小怪点击成功，切换到结算任务")
-		controller.Next(tasks.JieSuan) // 切换到结算任务
+		controller.Next(tasks.Win) // 切换到结算任务
 		return nil
 	}
 

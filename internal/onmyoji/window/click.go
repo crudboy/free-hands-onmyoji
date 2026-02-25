@@ -127,7 +127,7 @@ func (tc *Window) ClickAtTemplatePosition(templateImage image.Image, similarityT
 	return true, nil
 }
 
-func (tc *Window) ClickAtTemplatePositionWithOffset(templateImage image.Image, similarityThreshold float32, offsetX, offsetY int) (bool, error) {
+func (tc *Window) ClickAtTemplatePositionWithOffset(templateImage image.Image, similarityThreshold float32, offsetX, offsetY int, latency time.Duration) (bool, error) {
 
 	screenPosX, screenPosY, num, found, err := tc.calculateTemplatePosition(templateImage, similarityThreshold)
 	if err != nil {
@@ -144,16 +144,24 @@ func (tc *Window) ClickAtTemplatePositionWithOffset(templateImage image.Image, s
 	_, randomY := utils.RandomNormalInt64(int64(screenPosY-20), int64(screenPosY+20), int64(screenPosY), 10)
 
 	logger.Info("鼠标移动到: (%d, %d) 相似度: %.3f", randomX, randomY, num)
-	robotgo.Move(int(randomX)+offsetX, int(randomY)+offsetY)
-	time.Sleep(700 * time.Millisecond) // 等待鼠标移动完成
+	y := int(randomY) + offsetY
+	x := int(randomX) + offsetX
+	if x >= tc.WindowX+tc.WindowW {
+		x = tc.WindowX + tc.WindowW - 5
+	}
+	if y >= tc.WindowY+tc.WindowH {
+		y = tc.WindowY + tc.WindowH - 5
+	}
+	robotgo.Move(x, y)
+	time.Sleep(latency * time.Millisecond) // 等待鼠标移动完成
 	robotgo.Click("left")
 	return true, nil
 }
 
 // ClickAtTemplatePositionWithRandomOffset 计算模板图片位置并添加随机偏移后点击
 // 增加随机性，让点击更像人为操作
-func (tc *Window) ClickAtTemplatePositionWithRandomOffset(templateImage image.Image, similarityThreshold float32) (bool, error) {
-	return tc.ClickAtTemplatePositionWithOffset(templateImage, similarityThreshold, 0, 0)
+func (tc *Window) ClickAtTemplatePositionWithRandomOffset(templateImage image.Image, similarityThreshold float32, latency time.Duration) (bool, error) {
+	return tc.ClickAtTemplatePositionWithOffset(templateImage, similarityThreshold, 0, 0, latency)
 }
 
 // ClickFloor 点击地板使角色向前移动

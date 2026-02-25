@@ -6,6 +6,7 @@ const (
 	// ------------k28常量-------------------------
 	MoveTask TaskType = "Move"     // 移动
 	XunGuai  TaskType = "XunGuai"  // 寻怪任务
+	Win      TaskType = "Win"      // 胜利检测
 	JieSuan  TaskType = "JieSuan"  // 匹配结算
 	Boss     TaskType = "Boss"     // 刷boss任务
 	BaoXiang TaskType = "BaoXiang" // 寻宝箱任务

@@ -30,7 +30,7 @@ func (t *RewardDetector) Execute(controller statemachine.TaskController) error {
 	for i := 0; i < len(t.ImgTemplate); i++ {
 		go func(idx int) {
 			logger.Info("检测奖励模板: %d", t.ImgTemplate[idx].Path)
-			clicked, err := t.ClickAtTemplatePositionWithOffset(t.ImgTemplate[idx].Image, 0.8, 0, 100)
+			clicked, err := t.ClickAtTemplatePositionWithOffset(t.ImgTemplate[idx].Image, 0.8, 0, 100, 300)
 			if err == nil && clicked {
 				select {
 				case success <- struct{}{}:

@@ -25,7 +25,7 @@ func (t *FailDetector) Name() tasks.TaskType {
 }
 func (t *FailDetector) Execute(controller statemachine.TaskController) error {
 	// 使用公共方法计算模板位置并添加随机偏移点击
-	clicked, err := t.ClickAtTemplatePositionWithRandomOffset(t.ImgTemplate.Image, 0.8)
+	clicked, err := t.ClickAtTemplatePositionWithRandomOffset(t.ImgTemplate.Image, 0.8, 300)
 	if err != nil {
 		return err
 	}

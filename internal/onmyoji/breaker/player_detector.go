@@ -28,7 +28,7 @@ func (t *PlayerDetector) Name() tasks.TaskType {
 func (t *PlayerDetector) Execute(controller statemachine.TaskController) error {
 	for _, img := range t.ImgTemplates {
 		logger.Info("开始检测玩家模板: %d ", string(img.Path))
-		clicked, err := t.ClickAtTemplatePositionWithRandomOffset(img.Image, 0.8)
+		clicked, err := t.ClickAtTemplatePositionWithRandomOffset(img.Image, 0.8, 300)
 		if err != nil {
 			logger.Error("点击玩家模板失败: %v", err)
 			return err

@@ -43,7 +43,10 @@ func (t *MonsterDetector) Execute(controller statemachine.TaskController) error 
 		//点击成功 但是有可能会跑掉所以需要再次尝试匹配一次
 		logger.Info("小怪匹配成功 防止小怪跑掉，尝试再次匹配小怪")
 		// 使用公共方法点击
-		for i := 0; i < 5; i++ {
+		// 定义一个执行时间 在这个时间段内一直尝试匹配小怪点击 直到匹配成功或者时间结束
+		const retryDuration = 2 * time.Second
+		startTime := time.Now()
+		for time.Since(startTime) < retryDuration {
 			time.Sleep(400 * time.Millisecond) // 等待400毫秒，确保界面稳定
 			doubleClick, err := t.ClickAtTemplatePositionWithRandomOffset(t.ImgTemplate.Image, 0.8, 300)
 			if err != nil {
@@ -51,6 +54,10 @@ func (t *MonsterDetector) Execute(controller statemachine.TaskController) error 
 			}
 			if doubleClick {
 				logger.Info("小怪再次匹配成功，继续点击")
+			}
+			if !doubleClick {
+				logger.Info("小怪没有再次匹配成功，可能已经被点击掉了，停止尝试匹配")
+				break
 			}
 		}
 
